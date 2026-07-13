@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { AdminPageHeader, AdminShell } from "@/components/admin/AdminShell";
 import { Button } from "@/components/ui/button";
@@ -14,9 +14,16 @@ export const Route = createFileRoute("/admin/profile")({
 });
 
 function AdminProfile() {
-  const user = getCurrentUser();
-  const [name, setName] = useState(user?.displayName ?? "");
-  const [email, setEmail] = useState(user?.email ?? "");
+  const [user, setUser] = useState<ReturnType<typeof getCurrentUser>>(null);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    const currentUser = getCurrentUser();
+    setUser(currentUser);
+    setName(currentUser?.displayName ?? "");
+    setEmail(currentUser?.email ?? "");
+  }, []);
 
   return (
     <AdminShell>

@@ -92,7 +92,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
     <div className="p-3 border-t border-sidebar-border">
       <div className="px-3 py-2 text-xs opacity-80">
         <div className="font-medium truncate">{user?.displayName ?? "Admin"}</div>
-        <div className="truncate opacity-70">{user?.email}</div>
+        <div className="truncate opacity-70">{user?.email ?? "Admin console"}</div>
       </div>
       <Button
         onClick={onSignOut}
