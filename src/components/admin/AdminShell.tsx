@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { signOut, getCurrentUser } from "@/lib/services/auth-service";
 
-const items: { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean }[] = [
+const items = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/admin/products", label: "Products", icon: Package },
   { to: "/admin/categories", label: "Categories", icon: FolderTree },
@@ -31,13 +31,17 @@ const items: { to: string; label: string; icon: typeof LayoutDashboard; exact?: 
   { to: "/admin/inquiries", label: "Inquiries", icon: Mail },
   { to: "/admin/settings", label: "Settings", icon: Settings },
   { to: "/admin/profile", label: "Profile", icon: UserCircle },
-];
+] as const;
 
 export function AdminShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
-  const user = getCurrentUser();
+  const [user, setUser] = useState<ReturnType<typeof getCurrentUser>>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    setUser(getCurrentUser());
+  }, []);
 
   // Close the mobile drawer on route change.
   useEffect(() => {
@@ -52,11 +56,11 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const nav = (
     <nav className="p-3 flex-1 space-y-1 overflow-y-auto">
       {items.map((it) => {
-        const active = it.exact ? pathname === it.to : pathname.startsWith(it.to);
+        const active = it.to === "/admin" ? pathname === it.to : pathname.startsWith(it.to);
         return (
           <Link
             key={it.to}
-            to={it.to as "/admin"}
+            to={it.to}
             className={cn(
               "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
               active
@@ -88,7 +92,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
     <div className="p-3 border-t border-sidebar-border">
       <div className="px-3 py-2 text-xs opacity-80">
         <div className="font-medium truncate">{user?.displayName ?? "Admin"}</div>
-        <div className="truncate opacity-70">{user?.email}</div>
+        <div className="truncate opacity-70">{user?.email ?? "Admin console"}</div>
       </div>
       <Button
         onClick={onSignOut}
@@ -104,7 +108,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen bg-muted/40">
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex w-64 flex-col bg-sidebar text-sidebar-foreground">
+      <aside className="hidden md:flex w-64 flex-col bg-sidebar text-sidebar-foreground">
         {sidebarHeader}
         {nav}
         {sidebarFooter}
@@ -112,7 +116,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
       {/* Mobile drawer */}
       {mobileOpen ? (
-        <div className="lg:hidden fixed inset-0 z-50 flex">
+        <div className="md:hidden fixed inset-0 z-50 flex">
           <div
             className="absolute inset-0 bg-black/50"
             onClick={() => setMobileOpen(false)}
@@ -142,12 +146,12 @@ export function AdminShell({ children }: { children: ReactNode }) {
             <button
               type="button"
               onClick={() => setMobileOpen(true)}
-              className="lg:hidden p-2 -ml-2 rounded-md hover:bg-muted"
+              className="md:hidden p-2 -ml-2 rounded-md hover:bg-muted"
               aria-label="Open menu"
             >
               <Menu className="h-5 w-5" />
             </button>
-            <BarChart3 className="h-5 w-5 text-brand lg:hidden" />
+            <BarChart3 className="h-5 w-5 text-brand md:hidden" />
             <div className="text-sm font-medium">Admin Console</div>
           </div>
           <div className="flex items-center gap-3">
