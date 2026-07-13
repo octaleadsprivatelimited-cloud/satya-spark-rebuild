@@ -52,7 +52,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const nav = (
     <nav className="p-3 flex-1 space-y-1 overflow-y-auto">
       {items.map((it) => {
-        const active = it.exact ? pathname === it.to : pathname.startsWith(it.to);
+        const active = it.to === "/admin" ? pathname === it.to : pathname.startsWith(it.to);
         return (
           <Link
             key={it.to}
