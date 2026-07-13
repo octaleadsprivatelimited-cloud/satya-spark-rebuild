@@ -144,8 +144,7 @@ function HomePage() {
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {products.slice(0, 8).map((p) => (
-              <Link key={p.id} to="/products/$slug" params={{ slug: p.slug }} className="group">
-                <Card className="overflow-hidden h-full transition-shadow group-hover:shadow-[var(--shadow-elegant)]">
+              <Card key={p.id} className="group overflow-hidden h-full transition-shadow hover:shadow-[var(--shadow-elegant)]">
                   <div className="aspect-[4/3] relative overflow-hidden bg-secondary">
                     <img
                       src={p.image}
@@ -159,23 +158,27 @@ function HomePage() {
                   </div>
                   <CardContent className="p-4">
                     <p className="text-xs text-muted-foreground">{p.brand}</p>
-                    <h3 className="mt-1 font-semibold leading-tight">{p.name}</h3>
+                    <h3 className="mt-1 font-semibold leading-tight">
+                      <Link to="/products/$slug" params={{ slug: p.slug }} className="hover:text-brand">
+                        {p.name}
+                      </Link>
+                    </h3>
                     <p className="mt-2 text-xs text-muted-foreground">{p.categoryName}</p>
                     <div className="mt-3 flex items-center justify-between text-xs">
                       <a
                         href={whatsappLink(`Hello, I'd like a quote for ${p.name}.`)}
                         target="_blank"
                         rel="noreferrer"
-                        onClick={(e) => e.stopPropagation()}
                         className="text-brand font-semibold hover:underline"
                       >
                         Get a quote
                       </a>
-                      <span className="text-muted-foreground">View details →</span>
+                      <Link to="/products/$slug" params={{ slug: p.slug }} className="text-muted-foreground hover:text-brand">
+                        View details →
+                      </Link>
                     </div>
                   </CardContent>
                 </Card>
-              </Link>
             ))}
           </div>
         </div>
