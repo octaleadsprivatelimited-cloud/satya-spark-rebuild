@@ -36,8 +36,12 @@ const items = [
 export function AdminShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
-  const user = getCurrentUser();
+  const [user, setUser] = useState<ReturnType<typeof getCurrentUser>>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    setUser(getCurrentUser());
+  }, []);
 
   // Close the mobile drawer on route change.
   useEffect(() => {
