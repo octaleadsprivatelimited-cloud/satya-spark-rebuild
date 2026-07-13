@@ -15,21 +15,14 @@ import {
   Zap,
 } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { HeroSlider } from "@/components/site/HeroSlider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  getFeaturedProducts,
-  listServices,
-} from "@/lib/services/data-service";
-import { branches } from "@/lib/mock-data";
-import hero1 from "@/assets/hero-1.jpg";
-import heroEv from "@/assets/hero-ev.jpg";
+import { getFeaturedProducts, listServices } from "@/lib/services/data-service";
+import { brandLogos, branches, testimonials, whatsappLink } from "@/lib/mock-data";
 
-const featuredProductsQuery = {
-  queryKey: ["products", "featured"],
-  queryFn: getFeaturedProducts,
-};
+const featuredProductsQuery = { queryKey: ["products", "featured"], queryFn: getFeaturedProducts };
 const servicesQuery = { queryKey: ["services"], queryFn: listServices };
 
 export const Route = createFileRoute("/")({
@@ -71,14 +64,12 @@ const reasons = [
   { icon: Truck, title: "Wide Distribution", body: "Pan-India shipping with strong AP & Telangana presence." },
 ];
 
-const testimonials = [
-  { name: "K. Raghunath", role: "Managing Director, Kakinada", quote: "We have been purchasing Inno fusion splicers and accessories from Satya Power since 2018. Their pricing is unbeatable, and the service support in Kakinada is exceptionally prompt." },
-  { name: "Mohammad Ali", role: "Network Operator, Hyderabad", quote: "The team resolved a calibration issue on our EXFO OTDR within 24 hours. Highly professional and only use genuine components. Strongly recommended!" },
-  { name: "P. Srinivas Rao", role: "Proprietor, Vijayawada", quote: "Very reliable supplier for fiber equipment in Andhra Pradesh. Best prices and excellent customer service." },
-  { name: "G. Venkatesh", role: "Operations Head, Nellore", quote: "Satya Power is our go-to partner for fusion splicer electrode replacement and service. Highly knowledgeable technicians." },
+const engineerCards = [
+  { title: "Our Engineers", sub: "Expert hands. Precision work.", img: "/ref/engineer-1-bcsnKP6b.jpg" },
+  { title: "Team", sub: "Dedicated professionals", img: "/ref/team-CMydRHty.jpg" },
+  { title: "Service", sub: "On-site support", img: "/ref/service-engineer-4bWYO3Iz.jpg" },
+  { title: "Quality Control", sub: "Every product tested & verified", img: "/ref/engineer-2-CV9e-2Ti.jpg" },
 ];
-
-const brandNames = ["INNO", "Grandway", "Claron", "EXFO", "VIAVI", "SKL"];
 
 function HomePage() {
   const { data: products } = useSuspenseQuery(featuredProductsQuery);
@@ -86,40 +77,7 @@ function HomePage() {
 
   return (
     <SiteLayout>
-      {/* HERO */}
-      <section className="relative isolate overflow-hidden">
-        <img
-          src={hero1}
-          alt="Fiber optic fusion splicer"
-          className="absolute inset-0 h-full w-full object-cover"
-          width={1600}
-          height={900}
-        />
-        <div className="absolute inset-0 hero-overlay" />
-        <div className="container-page relative py-24 md:py-36 lg:py-44 max-w-3xl text-brand-foreground animate-fade-up">
-          <Badge className="mb-5 bg-amber text-amber-foreground border-0 gap-2">
-            <Award className="h-3.5 w-3.5" /> AUTHORIZED DISTRIBUTOR
-          </Badge>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-balance">
-            Fiber Optic Tools for AP & Telangana
-          </h1>
-          <p className="mt-5 text-lg md:text-xl text-white/85 max-w-2xl">
-            Authorized Distributor for Inno, Grandway, Claron & EXFO — sales and service across both states.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button asChild variant="brand" size="lg">
-              <Link to="/products">
-                Shop products <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="bg-transparent text-white border-white/40 hover:bg-white hover:text-brand">
-              <Link to="/services">
-                Our services <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <HeroSlider />
 
       {/* STATS */}
       <section className="bg-brand text-brand-foreground">
@@ -145,14 +103,23 @@ function HomePage() {
       </section>
 
       {/* BRANDS marquee */}
-      <section className="py-10 bg-secondary/60 border-y border-border overflow-hidden">
+      <section className="py-12 bg-secondary/60 border-y border-border">
         <div className="container-page">
           <p className="text-center text-xs uppercase tracking-widest text-muted-foreground mb-6">
             Authorized Brands & Partners
           </p>
-          <div className="flex flex-wrap gap-x-12 gap-y-4 justify-center items-center">
-            {brandNames.map((b) => (
-              <div key={b} className="text-2xl font-bold text-muted-foreground/70 tracking-widest">
+          <div className="flex flex-wrap gap-x-16 gap-y-6 justify-center items-center">
+            {[...brandLogos, ...brandLogos].map((b, idx) => (
+              <img
+                key={`${b.name}-${idx}`}
+                src={b.src}
+                alt={b.name}
+                className="h-10 md:h-12 w-auto object-contain opacity-90 grayscale hover:grayscale-0 transition"
+                loading="lazy"
+              />
+            ))}
+            {["EXFO", "VIAVI", "SKL", "Fujikura", "Sumitomo"].map((b) => (
+              <div key={b} className="text-xl md:text-2xl font-bold text-muted-foreground/70 tracking-widest">
                 {b}
               </div>
             ))}
@@ -167,6 +134,7 @@ function HomePage() {
             <div>
               <p className="text-sm uppercase tracking-widest text-brand font-semibold">Our top products</p>
               <h2 className="mt-2 text-3xl md:text-4xl font-bold">Top picks from our catalogue</h2>
+              <p className="mt-2 text-sm text-muted-foreground">500+ products across splicers, OTDRs, meters, cleavers & spares.</p>
             </div>
             <Button asChild variant="brandOutline">
               <Link to="/products">
@@ -193,6 +161,18 @@ function HomePage() {
                     <p className="text-xs text-muted-foreground">{p.brand}</p>
                     <h3 className="mt-1 font-semibold leading-tight">{p.name}</h3>
                     <p className="mt-2 text-xs text-muted-foreground">{p.categoryName}</p>
+                    <div className="mt-3 flex items-center justify-between text-xs">
+                      <a
+                        href={whatsappLink(`Hello, I'd like a quote for ${p.name}.`)}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-brand font-semibold hover:underline"
+                      >
+                        Get a quote
+                      </a>
+                      <span className="text-muted-foreground">View details →</span>
+                    </div>
                   </CardContent>
                 </Card>
               </Link>
@@ -250,36 +230,69 @@ function HomePage() {
                 <BatteryCharging className="h-6 w-6 text-brand" />
                 <h3 className="mt-2 font-semibold">EV Battery Repair & Service</h3>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Comprehensive health diagnostics, safety testing, capacity validation.
+                  Comprehensive health diagnostics, safety testing, capacity validation and servicing to restore original battery efficiency.
                 </p>
               </div>
               <div className="rounded-lg border border-border p-4">
                 <Zap className="h-6 w-6 text-brand" />
                 <h3 className="mt-2 font-semibold">Battery Cells Replacement</h3>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Cost-effective replacement of degraded cell modules.
+                  Cost-effective replacement of individual degraded or faulty cell modules to extend the lifecycle of your pack.
                 </p>
               </div>
             </div>
             <Button asChild variant="brand" size="lg" className="mt-6">
-              <a href="https://wa.me/919542840444?text=Hello%20Satya%20Power%2C%20I%20am%20interested%20in%20EV%20battery%20repair.">
+              <a
+                href={whatsappLink(
+                  "Hello SATYA POWER TECHNOLOGYS, I am interested in your EV battery repair and cell replacement services.",
+                )}
+                target="_blank"
+                rel="noreferrer"
+              >
                 Inquire on WhatsApp <ArrowRight className="h-4 w-4" />
               </a>
             </Button>
           </div>
           <div className="rounded-2xl overflow-hidden shadow-[var(--shadow-elegant)]">
-            <img src={heroEv} alt="EV Battery Repair Service" loading="lazy" className="w-full h-full object-cover" />
+            <img
+              src="/ref/ev-service-B4BVgvt-.png"
+              alt="EV Battery Repair Service"
+              loading="lazy"
+              className="w-full h-full object-cover"
+            />
           </div>
         </div>
       </section>
 
-      {/* WHY US */}
+      {/* WHY US — engineer image grid */}
       <section className="py-20 bg-secondary/40">
         <div className="container-page">
           <p className="text-sm uppercase tracking-widest text-brand font-semibold">Why Satya Power Technologys</p>
           <h2 className="mt-2 text-3xl md:text-4xl font-bold text-balance">
             Built for engineers. Trusted by professionals.
           </h2>
+          <p className="mt-3 text-muted-foreground max-w-2xl">
+            Six reasons customers across two states keep coming back for sales, service and support.
+          </p>
+
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {engineerCards.map((c) => (
+              <div key={c.title} className="group relative overflow-hidden rounded-xl aspect-[3/4]">
+                <img
+                  src={c.img}
+                  alt={c.title}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-brand/90 via-brand/40 to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4 text-white">
+                  <div className="font-semibold">{c.title}</div>
+                  <div className="text-xs opacity-90">{c.sub}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {reasons.map((r) => (
               <Card key={r.title} className="p-6">
@@ -323,7 +336,7 @@ function HomePage() {
         <div className="container-page">
           <p className="text-sm uppercase tracking-widest text-brand font-semibold">Customer Stories</p>
           <h2 className="mt-2 text-3xl md:text-4xl font-bold">Trusted by industry partners</h2>
-          <div className="mt-10 grid gap-6 md:grid-cols-2">
+          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {testimonials.map((t) => (
               <Card key={t.name} className="p-6">
                 <p className="text-foreground/80">“{t.quote}”</p>
@@ -357,11 +370,14 @@ function HomePage() {
             </div>
             <div className="flex flex-wrap gap-3">
               <Button asChild variant="brand" size="lg">
-                <a href="https://wa.me/919542840444">WhatsApp us</a>
+                <a href={whatsappLink()} target="_blank" rel="noreferrer">WhatsApp us</a>
               </Button>
               <Button asChild size="lg" variant="outline" className="bg-transparent border-white/40 text-white hover:bg-white hover:text-brand">
                 <Link to="/contact">Request a quote</Link>
               </Button>
+              <a href="tel:+919542840444" className="text-sm text-white/80 self-center underline">
+                or call +91 95428 40444
+              </a>
             </div>
           </div>
         </div>

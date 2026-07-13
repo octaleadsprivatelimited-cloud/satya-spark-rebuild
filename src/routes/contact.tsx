@@ -1,23 +1,24 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { toast } from "sonner";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { GoogleReviews } from "@/components/site/GoogleReviews";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { submitInquiry } from "@/lib/services/data-service";
-import { branches } from "@/lib/mock-data";
+import { branches, offices, whatsappLink } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contact — Satya Power Technologys" },
-      { name: "description", content: "Contact Satya Power Technologys for sales, service and quotes across Andhra Pradesh & Telangana." },
-      { property: "og:title", content: "Contact us" },
-      { property: "og:description", content: "Get a quote or on-site service — we respond within hours." },
+      { name: "description", content: "Quotes, service requests, partnership enquiries — we typically reply within hours. Reach us via phone, email or WhatsApp." },
+      { property: "og:title", content: "Let's talk fiber" },
+      { property: "og:description", content: "Get a quote or on-site service — we respond within hours across AP & Telangana." },
     ],
     links: [{ rel: "canonical", href: "/contact" }],
   }),
@@ -51,51 +52,101 @@ function ContactPage() {
   return (
     <SiteLayout>
       <section className="bg-brand text-brand-foreground">
-        <div className="container-page py-16 md:py-20">
+        <div className="container-page py-16 md:py-24">
           <p className="text-sm uppercase tracking-widest opacity-80">Get in touch</p>
-          <h1 className="mt-3 text-4xl md:text-5xl font-bold">Contact us</h1>
+          <h1 className="mt-3 text-4xl md:text-6xl font-bold">Let's talk fiber.</h1>
           <p className="mt-3 max-w-2xl text-white/85">
-            Sales, service and emergency support across Andhra Pradesh & Telangana.
+            Quotes, service requests, partnership enquiries — we typically reply within hours.
           </p>
         </div>
       </section>
 
+      {/* Offices */}
       <section className="py-16">
-        <div className="container-page grid gap-10 lg:grid-cols-[1fr_1.3fr]">
-          <div className="space-y-6">
-            <Card className="p-6">
-              <Phone className="h-6 w-6 text-brand" />
-              <h3 className="mt-3 font-semibold">Call</h3>
-              <a href="tel:+919542840444" className="text-brand">+91 95428 40444</a>
-            </Card>
-            <Card className="p-6">
-              <Mail className="h-6 w-6 text-brand" />
-              <h3 className="mt-3 font-semibold">Email</h3>
-              <a href="mailto:info@satyapowertechnologys.in" className="text-brand break-all">
-                info@satyapowertechnologys.in
-              </a>
-            </Card>
-            <Card className="p-6">
-              <MapPin className="h-6 w-6 text-brand" />
-              <h3 className="mt-3 font-semibold">Branches</h3>
-              <ul className="mt-2 space-y-2 text-sm">
-                {branches.map((b) => (
-                  <li key={b.city} className="flex items-center justify-between gap-4">
-                    <span>
-                      <span className="font-medium">{b.city}</span>
-                      <span className="text-muted-foreground"> · {b.type}</span>
-                    </span>
-                    <a href={`tel:${b.phone.replace(/\s/g, "")}`} className="text-brand text-xs whitespace-nowrap">
-                      {b.phone}
-                    </a>
-                  </li>
-                ))}
+        <div className="container-page grid gap-6 lg:grid-cols-2">
+          {offices.map((o) => (
+            <Card key={o.id} className="p-6 md:p-8">
+              <p className="text-sm uppercase tracking-widest text-brand font-semibold">{o.label}</p>
+              <h3 className="mt-2 text-xl font-bold">{o.company}</h3>
+              <p className="mt-1 font-medium">{o.city}</p>
+              <p className="mt-3 flex items-start gap-2 text-sm text-muted-foreground">
+                <MapPin className="h-4 w-4 mt-0.5 shrink-0 text-brand" />
+                {o.address}
+              </p>
+              {o.gstin ? (
+                <p className="mt-2 text-xs text-muted-foreground">
+                  GSTIN: <span className="font-medium">{o.gstin}</span>
+                </p>
+              ) : null}
+              <ul className="mt-4 space-y-2 text-sm">
+                <li className="flex items-center gap-2">
+                  <Phone className="h-4 w-4 text-brand" />
+                  <a href={`tel:${o.phoneTel}`} className="text-brand font-semibold hover:underline">{o.phone}</a>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Mail className="h-4 w-4 text-brand" />
+                  <a href={`mailto:${o.email}`} className="text-brand hover:underline break-all">{o.email}</a>
+                </li>
               </ul>
             </Card>
-          </div>
+          ))}
+        </div>
+      </section>
 
-          <Card className="p-6 md:p-8">
-            <h2 className="text-2xl font-bold">Request a quote</h2>
+      {/* WhatsApp CTA + Reviews */}
+      <section className="pb-16">
+        <div className="container-page grid gap-6 lg:grid-cols-[1.4fr_1fr] items-stretch">
+          <a
+            href={whatsappLink()}
+            target="_blank"
+            rel="noreferrer"
+            className="group rounded-2xl bg-[oklch(0.7_0.17_150)] text-white p-8 md:p-10 flex items-center justify-between gap-6 shadow-[var(--shadow-elegant)]"
+          >
+            <div>
+              <p className="text-sm uppercase tracking-widest opacity-90">WhatsApp</p>
+              <h3 className="mt-1 text-2xl md:text-3xl font-bold">Chat with us</h3>
+              <p className="mt-2 text-white/85 max-w-md">
+                Fastest way to reach us — send product photos, share requirements, or get a quote in minutes.
+              </p>
+            </div>
+            <div className="grid h-16 w-16 md:h-20 md:w-20 shrink-0 place-items-center rounded-full bg-white/20 group-hover:scale-110 transition-transform">
+              <MessageCircle className="h-8 w-8 md:h-10 md:w-10" />
+            </div>
+          </a>
+          <Card className="p-6 flex flex-col justify-center items-start gap-4">
+            <p className="text-sm uppercase tracking-widest text-brand font-semibold">Our reviews</p>
+            <GoogleReviews />
+            <p className="text-sm text-muted-foreground">
+              Read what our customers across AP & Telangana say about our sales and service.
+            </p>
+          </Card>
+        </div>
+      </section>
+
+      {/* Branches strip */}
+      <section className="pb-16">
+        <div className="container-page">
+          <p className="text-sm uppercase tracking-widest text-brand font-semibold">Service branches</p>
+          <h2 className="mt-2 text-2xl md:text-3xl font-bold">Reach the closest team</h2>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            {branches.map((b) => (
+              <Card key={b.city} className="p-4">
+                <div className="font-semibold text-brand">{b.city}</div>
+                <div className="text-xs text-muted-foreground">{b.type}</div>
+                <a href={`tel:${b.phone.replace(/\s/g, "")}`} className="mt-2 inline-flex items-center gap-1 text-sm text-brand hover:underline">
+                  <Phone className="h-3.5 w-3.5" /> {b.phone}
+                </a>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Form */}
+      <section className="pb-20">
+        <div className="container-page">
+          <Card className="p-6 md:p-10 max-w-3xl mx-auto">
+            <h2 className="text-2xl md:text-3xl font-bold">Send a message</h2>
             <p className="mt-1 text-sm text-muted-foreground">
               Fill in the form and our team will respond within hours.
             </p>
@@ -111,8 +162,8 @@ function ContactPage() {
                 </div>
               </div>
               <div>
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" name="email" type="email" required className="mt-1.5" />
+                <Label htmlFor="email">Email (Optional)</Label>
+                <Input id="email" name="email" type="email" className="mt-1.5" />
               </div>
               <div>
                 <Label htmlFor="subject">Subject</Label>
@@ -123,7 +174,7 @@ function ContactPage() {
                 <Textarea id="message" name="message" required rows={5} className="mt-1.5" />
               </div>
               <Button type="submit" variant="brand" size="lg" disabled={loading}>
-                {loading ? "Sending..." : "Send inquiry"}
+                {loading ? "Sending..." : "Send Message"}
               </Button>
             </form>
           </Card>
