@@ -1,5 +1,5 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   BarChart3,
   FolderTree,
@@ -7,12 +7,14 @@ import {
   LayoutDashboard,
   LogOut,
   Mail,
+  Menu,
   Newspaper,
   Package,
   Settings,
   UserCircle,
   Wrench,
   Briefcase,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
