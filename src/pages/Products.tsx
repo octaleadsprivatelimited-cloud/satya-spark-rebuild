@@ -10,32 +10,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { listCategories, listProducts } from "@/lib/services/data-service";
-import { brands, brandLogos } from "@/lib/mock-data";
+import { listBrands, listCategories, listProducts } from "@/lib/services/data-service";
+import { brands } from "@/lib/mock-data";
 
 const productsQuery = { queryKey: ["products"], queryFn: listProducts };
 const catsQuery = { queryKey: ["categories"], queryFn: listCategories };
-
-const mainBrands = [
-  { name: "INNO Instrument", src: "/ref/inno-BCaViBd-.png", note: "Fusion Splicers · OTDR" },
-  { name: "Grandway", src: "/ref/grandway-C3AfGUQz.png", note: "OTDR · Test Instruments" },
-  { name: "EXFO", src: null, note: "OTDR · Power Meters" },
-  { name: "Claron", src: "/ref/claron-CcrHz5w9.png", note: "Fiber Accessories" },
-];
-
-const additionalBrands = [
-  { name: "Fujikura", note: "Premium fusion splicers, OTDRs — trusted globally for active and core alignment." },
-  { name: "Sumitomo", note: "T-72C and Z2C series — engineered for reliability and field-proven precision." },
-  { name: "VIAVI", note: "MTS-2000 modular platform OTDRs for metro, long-haul and FTTx testing." },
-  { name: "T-berlus", note: "Mid-tier splicers ideal for FTTH and access-network installations." },
-  { name: "Devise-h", note: "Authorized partner providing product support and warranty service." },
-  { name: "Net Link", note: "Authorized partner providing product support and warranty service." },
-  { name: "Uniway", note: "Authorized partner providing product support and warranty service." },
-  { name: "Digisol", note: "Authorized partner providing product support and warranty service." },
-  { name: "Syntech", note: "Authorized partner providing product support and warranty service." },
-  { name: "GX", note: "Authorized partner providing product support and warranty service." },
-  { name: "TP-Link", note: "Authorized partner providing product support and warranty service." },
-];
+const brandsQuery = { queryKey: ["brands"], queryFn: listBrands };
 
 export default function ProductsPage() {
   const { data: products } = useSuspenseQuery(productsQuery);
