@@ -26,21 +26,32 @@ interface SingleProps {
 
 export function ImageUpload({ value, onChange, label = "Upload image" }: SingleProps) {
   const ref = useRef<HTMLInputElement>(null);
+  const [busy, setBusy] = useState(false);
   async function handle(files: FileList | null) {
     if (!files || !files[0]) return;
     const f = files[0];
     if (!validate(f)) return;
-    onChange(await fileToDataUrl(f));
+    setBusy(true);
+    try {
+      const url = await fileToDataUrl(f);
+      onChange(url);
+      toast.success(`Compressed to ~${Math.round((url.length * 0.75) / 1024)} KB`);
+    } catch {
+      toast.error("Failed to process image");
+    } finally {
+      setBusy(false);
+    }
   }
   return (
     <div className="space-y-2">
       <input ref={ref} type="file" accept="image/*" className="hidden"
-        onChange={(e) => handle(e.target.files)} />
+        onChange={(e) => { handle(e.target.files); if (ref.current) ref.current.value = ""; }} />
       <div className="flex items-center gap-2">
-        <Button type="button" variant="outline" size="sm" onClick={() => ref.current?.click()}>
-          <Upload className="h-4 w-4" /> {value ? "Change" : label}
+        <Button type="button" variant="outline" size="sm" disabled={busy} onClick={() => ref.current?.click()}>
+          {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+          {busy ? "Compressing…" : value ? "Change" : label}
         </Button>
-        {value ? (
+        {value && !busy ? (
           <Button type="button" variant="ghost" size="sm" onClick={() => onChange("")}>
             <X className="h-4 w-4" /> Remove
           </Button>
