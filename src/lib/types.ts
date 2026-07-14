@@ -21,6 +21,7 @@ export interface Product {
   specs: Record<string, string>;
   image: string;
   gallery?: string[];
+  videoUrl?: string;
   featured?: boolean;
   createdAt: string;
 }
@@ -51,6 +52,7 @@ export interface GalleryItem {
   id: string;
   title: string;
   image: string;
+  videoUrl?: string;
   category: string;
 }
 

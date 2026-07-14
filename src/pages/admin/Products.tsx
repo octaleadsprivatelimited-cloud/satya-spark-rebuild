@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { ImageUpload, MultiImageUpload } from "@/components/admin/ImageUpload";
 import {
   createProduct, deleteProduct, listCategories, listProducts, updateProduct,
 } from "@/lib/services/data-service";
@@ -28,16 +29,17 @@ export default function AdminProducts() {
 
   function openNew() {
     setEditing(null);
-    setForm({ name: "", brand: "", categoryId: cats[0]?.id, shortDescription: "", image: "", featured: false });
+    setForm({ name: "", brand: "", categoryId: cats[0]?.id, shortDescription: "", image: "", gallery: [], videoUrl: "", featured: false });
     setOpen(true);
   }
   function openEdit(p: Product) {
     setEditing(p);
-    setForm({ ...p, featuresText: p.features.join("\n") });
+    setForm({ ...p, gallery: p.gallery ?? [], videoUrl: p.videoUrl ?? "", featuresText: p.features.join("\n") });
     setOpen(true);
   }
   async function onSubmit() {
     if (!form.name?.trim()) return toast.error("Name is required");
+    if (!form.image) return toast.error("Please upload a main image");
     const payload: Partial<Product> = {
       ...form,
       features: (form.featuresText || "").split("\n").map((s) => s.trim()).filter(Boolean),
@@ -100,9 +102,9 @@ export default function AdminProducts() {
       </Card>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader><DialogTitle>{editing ? "Edit product" : "New product"}</DialogTitle></DialogHeader>
-          <div className="grid gap-3">
+        <DialogContent className="max-w-lg max-h-[90vh] flex flex-col p-0">
+          <DialogHeader className="p-6 pb-2 border-b"><DialogTitle>{editing ? "Edit product" : "New product"}</DialogTitle></DialogHeader>
+          <div className="grid gap-3 overflow-y-auto px-6 py-4">
             <div><Label>Name</Label><Input value={form.name ?? ""} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
             <div className="grid grid-cols-2 gap-3">
               <div><Label>Brand</Label><Input value={form.brand ?? ""} onChange={(e) => setForm({ ...form, brand: e.target.value })} /></div>
@@ -114,13 +116,25 @@ export default function AdminProducts() {
                 </select>
               </div>
             </div>
-            <div><Label>Image URL</Label><Input value={form.image ?? ""} onChange={(e) => setForm({ ...form, image: e.target.value })} /></div>
+            <div>
+              <Label>Main image</Label>
+              <ImageUpload value={form.image} onChange={(v) => setForm({ ...form, image: v })} />
+            </div>
+            <div>
+              <Label>Additional images (gallery)</Label>
+              <MultiImageUpload value={form.gallery ?? []} onChange={(v) => setForm({ ...form, gallery: v })} />
+            </div>
+            <div>
+              <Label>YouTube video URL (optional)</Label>
+              <Input value={form.videoUrl ?? ""} onChange={(e) => setForm({ ...form, videoUrl: e.target.value })}
+                placeholder="https://www.youtube.com/watch?v=..." />
+            </div>
             <div><Label>Short description</Label><Textarea rows={2} value={form.shortDescription ?? ""} onChange={(e) => setForm({ ...form, shortDescription: e.target.value })} /></div>
             <div><Label>Description</Label><Textarea rows={3} value={form.description ?? ""} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>
             <div><Label>Features (one per line)</Label><Textarea rows={3} value={form.featuresText ?? ""} onChange={(e) => setForm({ ...form, featuresText: e.target.value })} /></div>
             <div className="flex items-center gap-2"><Switch checked={!!form.featured} onCheckedChange={(v) => setForm({ ...form, featured: v })} /><Label>Featured</Label></div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="p-4 border-t bg-background">
             <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
             <Button variant="brand" onClick={onSubmit}>{editing ? "Save" : "Create"}</Button>
           </DialogFooter>
