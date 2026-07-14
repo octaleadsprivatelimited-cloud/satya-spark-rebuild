@@ -12,9 +12,12 @@ import {
   products as mockProducts,
   projects as mockProjects,
   services as mockServices,
+  siteBrands as mockBrands,
   siteSettings as mockSettings,
+  MAIN_BRAND_NAMES,
 } from "../mock-data";
 import type {
+  Brand,
   Category,
   GalleryItem,
   Inquiry,
@@ -253,3 +256,43 @@ export async function updateSiteSettings(data: Partial<SiteSettings>): Promise<S
   Object.assign(mockSettings, data);
   return mockSettings;
 }
+
+// ---------- Brands ----------
+const isMainName = (n: string) =>
+  (MAIN_BRAND_NAMES as readonly string[]).some((m) => m.toLowerCase() === n.trim().toLowerCase());
+
+export async function listBrands(): Promise<Brand[]> {
+  await delay();
+  return [...mockBrands].sort((a, b) => a.order - b.order);
+}
+export async function createBrand(data: Partial<Brand>): Promise<Brand> {
+  await delay();
+  const name = (data.name || "Untitled").trim();
+  const tier: Brand["tier"] = isMainName(name) ? (data.tier ?? "main") : "additional";
+  const item: Brand = {
+    id: uid(),
+    name,
+    logo: data.logo,
+    note: data.note || "",
+    tier,
+    showOnHome: data.showOnHome ?? false,
+    order: data.order ?? mockBrands.length + 1,
+  };
+  mockBrands.push(item);
+  return item;
+}
+export async function updateBrand(id: string, data: Partial<Brand>): Promise<Brand | null> {
+  await delay();
+  const idx = mockBrands.findIndex((b) => b.id === id);
+  if (idx === -1) return null;
+  const next = { ...mockBrands[idx], ...data };
+  if (!isMainName(next.name)) next.tier = "additional";
+  mockBrands[idx] = next;
+  return mockBrands[idx];
+}
+export async function deleteBrand(id: string): Promise<void> {
+  await delay();
+  const idx = mockBrands.findIndex((b) => b.id === id);
+  if (idx !== -1) mockBrands.splice(idx, 1);
+}
+
