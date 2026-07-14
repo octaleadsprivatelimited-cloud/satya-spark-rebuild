@@ -4,16 +4,38 @@ import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { PageHero } from "@/components/site/PageHero";
+import { QuoteCta } from "@/components/site/QuoteCta";
 import { Seo } from "@/components/Seo";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { listCategories, listProducts } from "@/lib/services/data-service";
-import { brands } from "@/lib/mock-data";
+import { brands, brandLogos } from "@/lib/mock-data";
 
 const productsQuery = { queryKey: ["products"], queryFn: listProducts };
 const catsQuery = { queryKey: ["categories"], queryFn: listCategories };
+
+const mainBrands = [
+  { name: "INNO Instrument", src: "/ref/inno-BCaViBd-.png", note: "Fusion Splicers · OTDR" },
+  { name: "Grandway", src: "/ref/grandway-C3AfGUQz.png", note: "OTDR · Test Instruments" },
+  { name: "EXFO", src: null, note: "OTDR · Power Meters" },
+  { name: "Claron", src: "/ref/claron-CcrHz5w9.png", note: "Fiber Accessories" },
+];
+
+const additionalBrands = [
+  { name: "Fujikura", note: "Premium fusion splicers, OTDRs — trusted globally for active and core alignment." },
+  { name: "Sumitomo", note: "T-72C and Z2C series — engineered for reliability and field-proven precision." },
+  { name: "VIAVI", note: "MTS-2000 modular platform OTDRs for metro, long-haul and FTTx testing." },
+  { name: "T-berlus", note: "Mid-tier splicers ideal for FTTH and access-network installations." },
+  { name: "Devise-h", note: "Authorized partner providing product support and warranty service." },
+  { name: "Net Link", note: "Authorized partner providing product support and warranty service." },
+  { name: "Uniway", note: "Authorized partner providing product support and warranty service." },
+  { name: "Digisol", note: "Authorized partner providing product support and warranty service." },
+  { name: "Syntech", note: "Authorized partner providing product support and warranty service." },
+  { name: "GX", note: "Authorized partner providing product support and warranty service." },
+  { name: "TP-Link", note: "Authorized partner providing product support and warranty service." },
+];
 
 export default function ProductsPage() {
   const { data: products } = useSuspenseQuery(productsQuery);
@@ -22,50 +44,143 @@ export default function ProductsPage() {
   const [cat, setCat] = useState("all");
   const [brand, setBrand] = useState("all");
 
-  const filtered = useMemo(() => products.filter((p) => {
-    if (cat !== "all" && p.categoryId !== cat) return false;
-    if (brand !== "all" && p.brand !== brand) return false;
-    if (q && !`${p.name} ${p.brand} ${p.categoryName}`.toLowerCase().includes(q.toLowerCase())) return false;
-    return true;
-  }), [products, cat, brand, q]);
+  const filtered = useMemo(
+    () =>
+      products.filter((p) => {
+        if (cat !== "all" && p.categoryId !== cat) return false;
+        if (brand !== "all" && p.brand !== brand) return false;
+        if (q && !`${p.name} ${p.brand} ${p.categoryName}`.toLowerCase().includes(q.toLowerCase())) return false;
+        return true;
+      }),
+    [products, cat, brand, q],
+  );
 
   return (
     <SiteLayout>
-      <Seo title="Products — Fiber Optic Tools | Satya Power Technologys"
-        description="Browse fusion splicers, OTDRs, power meters, cleavers, VFLs and toolkits from INNO, VIAVI, EXFO, Grandway and more." />
+      <Seo
+        title="Brands & Products — Satya Power Technologys"
+        description="Authorized distributor for INNO, Grandway, EXFO, Claron and more. Fusion splicers, OTDRs, power meters, cleavers and toolkits."
+      />
       <PageHero
-        image="/ref/product-splicer-CaWSWLtE.jpg"
-        eyebrow="Catalogue"
-        title="Products"
-        subtitle="Genuine fiber optic tools from authorized brands. Fusion splicers, OTDRs, power meters, cleavers, VFLs and complete toolkits."
+        eyebrow="Our partners"
+        title="Brands We Represent"
+        size="lg"
+        subtitle="Genuine equipment from the world's most trusted fiber optic manufacturers."
       />
 
-      <section className="py-10 border-b border-border">
-        <div className="container-page grid gap-4 md:grid-cols-[1fr_auto_auto]">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search products..." className="pl-9" />
+      {/* Authorized partner strip */}
+      <section className="py-16">
+        <div className="container-page grid gap-10 lg:grid-cols-2 items-start">
+          <div>
+            <span className="inline-block rounded-sm bg-brand px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-brand-foreground">
+              Authorized Distributor
+            </span>
+            <h2 className="mt-4 text-3xl md:text-4xl font-bold">Official Sales & Service Partner</h2>
+            <p className="mt-1 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              For Andhra Pradesh & Telangana
+            </p>
+            <p className="mt-4 text-sm text-muted-foreground max-w-lg">
+              SATYA POWER TECHNOLOGYS is the Authorized Distributor for INNO Instrument, Grandway,
+              Claron and EXFO across South India. We provide genuine equipment, full manufacturer
+              warranty support, certified calibration, and in-region spare parts.
+            </p>
+            <div className="mt-6 grid grid-cols-2 gap-3 max-w-md">
+              <div className="rounded-md border border-border bg-white p-4">
+                <div className="text-xs text-muted-foreground">01</div>
+                <div className="mt-1 text-sm font-bold">Authorized Products</div>
+              </div>
+              <div className="rounded-md border border-border bg-white p-4">
+                <div className="text-xs text-muted-foreground">02</div>
+                <div className="mt-1 text-sm font-bold">13+ Years experience</div>
+              </div>
+              <div className="rounded-md border border-border bg-white p-4">
+                <div className="text-xs text-muted-foreground">03</div>
+                <div className="mt-1 text-sm font-bold">05 Service centers</div>
+              </div>
+              <div className="rounded-md border border-border bg-white p-4">
+                <div className="text-xs text-muted-foreground">04</div>
+                <div className="mt-1 text-sm font-bold">100% Genuine Support</div>
+              </div>
+            </div>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button asChild variant="brand"><a href="#catalog">Shop Authorized Products</a></Button>
+              <Button asChild variant="brandOutline"><a href="/services">Service & Repair</a></Button>
+            </div>
           </div>
-          <select value={cat} onChange={(e) => setCat(e.target.value)} className="h-9 rounded-md border border-input bg-background px-3 text-sm">
-            <option value="all">All categories</option>
-            {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-          </select>
-          <select value={brand} onChange={(e) => setBrand(e.target.value)} className="h-9 rounded-md border border-input bg-background px-3 text-sm">
-            <option value="all">All brands</option>
-            {brands.map((b) => <option key={b} value={b}>{b}</option>)}
-          </select>
+
+          <div className="grid grid-cols-2 gap-4">
+            {mainBrands.map((b) => (
+              <div key={b.name} className="rounded-md border border-border bg-white aspect-square grid place-items-center p-6 hover:shadow-[var(--shadow-elegant)] transition-shadow">
+                <div className="text-center">
+                  {b.src ? (
+                    <img src={b.src} alt={b.name} className="max-h-14 w-auto object-contain mx-auto" />
+                  ) : (
+                    <div className="text-2xl font-black text-brand tracking-wider">{b.name.split(" ")[0]}</div>
+                  )}
+                  <div className="mt-3 text-[10px] uppercase tracking-widest text-muted-foreground">
+                    {b.note}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section className="py-16">
+      {/* Additional brands */}
+      <section className="py-16 bg-secondary/40 border-y border-border">
         <div className="container-page">
-          <p className="text-sm text-muted-foreground mb-6">{filtered.length} product{filtered.length === 1 ? "" : "s"}</p>
-          {filtered.length === 0 ? (
-            <div className="rounded-lg border border-dashed border-border p-12 text-center text-muted-foreground">
-              No products match your filters.
-              <div className="mt-4">
-                <Button variant="brandOutline" onClick={() => { setQ(""); setCat("all"); setBrand("all"); }}>Reset filters</Button>
+          <div className="flex items-end justify-between flex-wrap gap-4">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">Portfolio</p>
+              <h2 className="mt-2 text-2xl md:text-3xl font-bold">Our Additional Brands</h2>
+            </div>
+            <p className="text-xs text-muted-foreground max-w-xs text-right">
+              Premium brands available in-region — all backed by our own in-region support.
+            </p>
+          </div>
+          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {additionalBrands.map((b) => (
+              <div key={b.name} className="rounded-md border border-border bg-white p-5">
+                <div className="flex items-center justify-between">
+                  <div className="font-bold">{b.name}</div>
+                  <span className="text-[10px] uppercase tracking-widest text-brand">Partner</span>
+                </div>
+                <p className="mt-2 text-xs text-muted-foreground">{b.note}</p>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Catalog */}
+      <section id="catalog" className="py-16">
+        <div className="container-page">
+          <div className="flex items-end justify-between flex-wrap gap-4 mb-8">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-brand">Catalogue</p>
+              <h2 className="mt-2 text-2xl md:text-3xl font-bold">Browse our products</h2>
+            </div>
+            <p className="text-sm text-muted-foreground">{filtered.length} product{filtered.length === 1 ? "" : "s"}</p>
+          </div>
+          <div className="grid gap-3 md:grid-cols-[1fr_auto_auto] mb-8">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search products..." className="pl-9" />
+            </div>
+            <select value={cat} onChange={(e) => setCat(e.target.value)} className="h-10 rounded-md border border-input bg-background px-3 text-sm">
+              <option value="all">All categories</option>
+              {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+            <select value={brand} onChange={(e) => setBrand(e.target.value)} className="h-10 rounded-md border border-input bg-background px-3 text-sm">
+              <option value="all">All brands</option>
+              {brands.map((b) => <option key={b} value={b}>{b}</option>)}
+            </select>
+          </div>
+
+          {filtered.length === 0 ? (
+            <div className="rounded-md border border-dashed border-border p-12 text-center text-muted-foreground">
+              No products match your filters.
             </div>
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -88,6 +203,8 @@ export default function ProductsPage() {
           )}
         </div>
       </section>
+
+      <QuoteCta />
     </SiteLayout>
   );
 }

@@ -1,8 +1,8 @@
-import { Award, HeartHandshake, MapPin, Phone, Target, Users } from "lucide-react";
+import { Award, Calendar, MapPin, Target, Users } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { PageHero } from "@/components/site/PageHero";
+import { QuoteCta } from "@/components/site/QuoteCta";
 import { Seo } from "@/components/Seo";
-import { Card } from "@/components/ui/card";
 import { offices } from "@/lib/mock-data";
 
 const pillars = [
@@ -15,14 +15,14 @@ const kpis = [
   { value: "13+", label: "Years in business" },
   { value: "5000+", label: "Happy Customers" },
   { value: "2", label: "States covered" },
-  { value: "6+", label: "Authorized brands" },
+  { value: "7+", label: "Authorized brands" },
 ];
 
 const milestones = [
   { year: "2013", title: "Manufacturer & Distributor", body: "SATYA POWER TECHNOLOGYS established as a leading manufacturer and distributor of Fusion Splicers, OTDRs, and fiber optic toolkits." },
-  { year: "2024", title: "Operations & Quality Upgrades", body: "Upgraded operations to match global standards, equipping facilities with state-of-the-art machinery." },
-  { year: "2024", title: "Adhering to Best Practices", body: "Maintained the highest standards of quality through management systems and regular audits." },
-  { year: "2025", title: "Notable Market Growth", body: "Expanded market presence under the guidance of our mentor, Mr. V Dorababu (CEO)." },
+  { year: "2018", title: "Operations & Quality Upgrades", body: "Upgraded operations to match global standards, equipping facilities with state-of-the-art machinery and quality systems." },
+  { year: "2022", title: "Adhering to Best Practices", body: "Maintained the highest standards of quality through management systems and regular audits by leading certification bodies." },
+  { year: "2025", title: "Notable Market Growth", body: "Expanded market presence under the guidance of our mentor, Mr. V. Dorababu (CEO), leveraging his industrial experience." },
 ];
 
 export default function AboutPage() {
@@ -33,72 +33,86 @@ export default function AboutPage() {
         description="Built on trust. Backed by service. Satya Power Technologys is a manufacturer and distributor of fusion splicers, OTDRs and fiber optic toolkits since 2013."
       />
       <PageHero
-        image="/ref/team-CMydRHty.jpg"
         eyebrow="Our story"
         title="Built on trust. Backed by service."
         size="lg"
-        subtitle="Service first, sales next. SATYA POWER TECHNOLOGYS is a leading manufacturer and distributor of fusion splicers, OTDRs and fiber optic toolkits since 2013."
+        subtitle="Service first, Sales next."
       />
 
-      <section className="py-20">
+      {/* Pillars + KPIs */}
+      <section className="py-16 bg-secondary/40">
         <div className="container-page">
-          <p className="text-sm uppercase tracking-widest text-brand font-semibold">What drives us</p>
-          <h2 className="mt-2 text-3xl md:text-4xl font-bold">Service first. Sales next.</h2>
-          <div className="mt-10 grid gap-6 lg:grid-cols-3">
+          <div className="text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-brand">What drives us</p>
+            <h2 className="mt-2 text-3xl md:text-4xl font-bold">Service first. Sales next.</h2>
+          </div>
+          <div className="mt-10 grid gap-4 md:grid-cols-3">
             {pillars.map((p) => (
-              <Card key={p.title} className="p-6">
-                <p.icon className="h-8 w-8 text-brand" />
-                <h3 className="mt-4 text-xl font-semibold">{p.title}</h3>
-                <p className="mt-2 text-muted-foreground">{p.body}</p>
-              </Card>
+              <div key={p.title} className="rounded-md border border-border bg-white p-6">
+                <div className="grid h-9 w-9 place-items-center rounded-md bg-brand/10 text-brand">
+                  <p.icon className="h-4 w-4" />
+                </div>
+                <h3 className="mt-4 font-semibold">{p.title}</h3>
+                <p className="mt-2 text-sm text-muted-foreground">{p.body}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {kpis.map((k) => (
+              <div key={k.label} className="rounded-md border border-border bg-white p-6 text-center">
+                <div className="text-3xl md:text-4xl font-bold text-brand">{k.value}</div>
+                <div className="mt-1 text-xs text-muted-foreground uppercase tracking-wide">{k.label}</div>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-14 bg-brand text-brand-foreground">
-        <div className="container-page grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {kpis.map((k) => (
-            <div key={k.label} className="rounded-xl border border-white/15 bg-white/5 p-6 text-center">
-              <div className="text-4xl font-bold">{k.value}</div>
-              <div className="mt-1 text-sm opacity-80">{k.label}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="py-20 bg-secondary/40">
+      {/* Journey */}
+      <section className="py-16">
         <div className="container-page">
-          <p className="text-sm uppercase tracking-widest text-brand font-semibold">Milestones</p>
-          <h2 className="mt-2 text-3xl md:text-4xl font-bold">Our Journey</h2>
-          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {milestones.map((m, i) => (
-              <Card key={i} className="p-6">
-                <div className="text-brand font-bold text-xl">{m.year}</div>
-                <h3 className="mt-2 font-semibold">{m.title}</h3>
+          <div className="text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-brand">Milestones</p>
+            <h2 className="mt-2 text-3xl md:text-4xl font-bold">Our Journey</h2>
+          </div>
+          <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {milestones.map((m) => (
+              <div key={m.year} className="rounded-md border border-border bg-white p-6">
+                <div className="flex items-center gap-2 text-brand">
+                  <Calendar className="h-4 w-4" />
+                  <span className="text-xs font-bold">{m.year}</span>
+                </div>
+                <h3 className="mt-3 font-semibold">{m.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">{m.body}</p>
-              </Card>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-20">
+      {/* Address strip */}
+      <section className="pb-16">
         <div className="container-page">
-          <p className="text-sm uppercase tracking-widest text-brand font-semibold">Reach us</p>
-          <h2 className="mt-2 text-3xl md:text-4xl font-bold">Our offices</h2>
-          <div className="mt-10 grid gap-6 lg:grid-cols-2">
+          <div className="rounded-md bg-brand text-brand-foreground p-6 md:p-8 grid gap-8 md:grid-cols-2">
             {offices.map((o) => (
-              <Card key={o.id} className="p-6">
-                <div className="flex items-center gap-2 text-brand"><HeartHandshake className="h-5 w-5" /><span className="text-xs uppercase tracking-widest font-semibold">{o.label}</span></div>
-                <h3 className="mt-2 text-xl font-bold">{o.company}</h3>
-                <p className="mt-1 text-sm text-muted-foreground flex items-start gap-2"><MapPin className="h-4 w-4 mt-0.5 text-brand" />{o.address}</p>
-                <a href={`tel:${o.phoneTel}`} className="mt-3 inline-flex items-center gap-2 text-brand font-semibold"><Phone className="h-4 w-4" />{o.phone}</a>
-              </Card>
+              <div key={o.id}>
+                <div className="flex items-center gap-2 text-white/70 text-xs uppercase tracking-widest">
+                  <MapPin className="h-3.5 w-3.5" /> {o.label}
+                </div>
+                <div className="mt-2 font-bold">{o.city}</div>
+                <p className="mt-1 text-sm text-white/85">{o.address}</p>
+                <div className="mt-2 text-xs text-white/75">
+                  {o.gstin ? <>GSTIN: {o.gstin} · </> : null}
+                  <a href={`tel:${o.phoneTel}`} className="hover:underline">{o.phone}</a>
+                </div>
+              </div>
             ))}
           </div>
         </div>
       </section>
+
+      <QuoteCta />
     </SiteLayout>
   );
 }
