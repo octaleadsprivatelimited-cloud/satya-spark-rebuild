@@ -22,9 +22,9 @@ export default function GalleryPage() {
     <SiteLayout>
       <Seo title="Gallery — Satya Power Technologys" description="Photos and videos of our service, field work, products, branches and team." />
       <PageHero
-        image="/ref/engineer-1-bcsnKP6b.jpg"
         eyebrow="Moments"
         title="Gallery"
+        size="lg"
         subtitle="Photos and videos from our service, field work, products and team."
       />
       <section className="py-10 border-b border-border">
@@ -63,6 +63,7 @@ export default function GalleryPage() {
           })}
         </div>
       </section>
+      <QuoteCta />
 
       {embed ? (
         <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4" onClick={() => setVideoUrl(null)}>
