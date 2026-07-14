@@ -71,12 +71,21 @@ interface MultiProps {
 
 export function MultiImageUpload({ value = [], onChange }: MultiProps) {
   const ref = useRef<HTMLInputElement>(null);
+  const [busy, setBusy] = useState(false);
   async function handle(files: FileList | null) {
     if (!files || files.length === 0) return;
     const valid = Array.from(files).filter(validate);
     if (!valid.length) return;
-    const urls = await filesToDataUrls(valid);
-    onChange([...(value ?? []), ...urls]);
+    setBusy(true);
+    try {
+      const urls = await filesToDataUrls(valid);
+      onChange([...(value ?? []), ...urls]);
+      toast.success(`Added ${urls.length} image${urls.length > 1 ? "s" : ""} (compressed)`);
+    } catch {
+      toast.error("Failed to process images");
+    } finally {
+      setBusy(false);
+    }
   }
   function remove(i: number) {
     const next = [...value];
