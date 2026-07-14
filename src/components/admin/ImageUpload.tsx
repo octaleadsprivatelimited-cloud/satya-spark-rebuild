@@ -1,18 +1,18 @@
-import { useRef } from "react";
-import { Upload, X } from "lucide-react";
+import { useRef, useState } from "react";
+import { Upload, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { fileToDataUrl, filesToDataUrls } from "@/lib/media";
 import { toast } from "sonner";
 
-const MAX_BYTES = 3 * 1024 * 1024; // 3 MB per image
+const MAX_INPUT_BYTES = 15 * 1024 * 1024; // 15 MB source cap; we compress afterwards
 
 function validate(file: File): boolean {
   if (!file.type.startsWith("image/")) {
     toast.error(`${file.name}: not an image`);
     return false;
   }
-  if (file.size > MAX_BYTES) {
-    toast.error(`${file.name}: exceeds 3 MB`);
+  if (file.size > MAX_INPUT_BYTES) {
+    toast.error(`${file.name}: exceeds 15 MB`);
     return false;
   }
   return true;
