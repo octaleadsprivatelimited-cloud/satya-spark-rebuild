@@ -25,12 +25,12 @@ export default function BlogPage() {
           {data.map((post) => (
             <Card key={post.id} className="overflow-hidden group">
               <div className="aspect-[16/9] overflow-hidden bg-secondary">
-                <img src={post.image} alt={post.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <img src={post.cover} alt={post.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
               </div>
               <CardContent className="p-5">
                 <div className="flex items-center gap-2 justify-between text-xs text-muted-foreground">
-                  <Badge variant="outline">{post.category}</Badge>
-                  <span className="inline-flex items-center gap-1"><CalendarDays className="h-3.5 w-3.5" />{post.date}</span>
+                  <Badge variant="outline">{post.tags[0] ?? "News"}</Badge>
+                  <span className="inline-flex items-center gap-1"><CalendarDays className="h-3.5 w-3.5" />{post.publishedAt}</span>
                 </div>
                 <h3 className="mt-3 font-semibold leading-tight">{post.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{post.excerpt}</p>
