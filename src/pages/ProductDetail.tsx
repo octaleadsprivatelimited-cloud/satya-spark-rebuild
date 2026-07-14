@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Check, Phone } from "lucide-react";
@@ -6,6 +7,8 @@ import { Seo } from "@/components/Seo";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getProduct } from "@/lib/services/data-service";
+import { getYouTubeEmbed } from "@/lib/media";
+import { cn } from "@/lib/utils";
 
 export default function ProductDetailPage() {
   const { slug = "" } = useParams();
@@ -13,6 +16,7 @@ export default function ProductDetailPage() {
     queryKey: ["product", slug],
     queryFn: () => getProduct(slug),
   });
+  const [active, setActive] = useState(0);
 
   if (isLoading) {
     return (
@@ -36,6 +40,9 @@ export default function ProductDetailPage() {
     );
   }
 
+  const images = [p.image, ...(p.gallery ?? [])].filter(Boolean);
+  const embed = p.videoUrl ? getYouTubeEmbed(p.videoUrl) : null;
+
   return (
     <SiteLayout>
       <Seo
@@ -53,8 +60,28 @@ export default function ProductDetailPage() {
       </section>
       <section className="pb-20">
         <div className="container-page grid gap-10 lg:grid-cols-2">
-          <div className="rounded-2xl overflow-hidden bg-secondary aspect-[4/3]">
-            <img src={p.image} alt={p.name} className="h-full w-full object-cover" />
+          <div>
+            <div className="rounded-2xl overflow-hidden bg-secondary aspect-[4/3]">
+              <img src={images[active] ?? p.image} alt={p.name} className="h-full w-full object-cover" />
+            </div>
+            {images.length > 1 ? (
+              <div className="mt-3 grid grid-cols-5 gap-2">
+                {images.map((src, i) => (
+                  <button key={i} onClick={() => setActive(i)}
+                    className={cn("aspect-square rounded-md overflow-hidden border-2 bg-secondary",
+                      active === i ? "border-brand" : "border-transparent hover:border-border")}>
+                    <img src={src} alt="" className="h-full w-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            ) : null}
+            {embed ? (
+              <div className="mt-6 rounded-2xl overflow-hidden bg-black aspect-video">
+                <iframe src={embed} title={`${p.name} video`} className="h-full w-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen />
+              </div>
+            ) : null}
           </div>
           <div>
             <p className="text-sm text-muted-foreground">{p.brand} · {p.categoryName}</p>
@@ -73,28 +100,32 @@ export default function ProductDetailPage() {
               </Button>
             </div>
 
-            <div className="mt-10">
-              <h2 className="text-lg font-semibold">Key features</h2>
-              <ul className="mt-3 space-y-2">
-                {p.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm">
-                    <Check className="h-4 w-4 mt-0.5 text-brand shrink-0" /> {f}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {p.features.length ? (
+              <div className="mt-10">
+                <h2 className="text-lg font-semibold">Key features</h2>
+                <ul className="mt-3 space-y-2">
+                  {p.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-sm">
+                      <Check className="h-4 w-4 mt-0.5 text-brand shrink-0" /> {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
 
-            <div className="mt-10">
-              <h2 className="text-lg font-semibold">Specifications</h2>
-              <dl className="mt-3 grid grid-cols-2 gap-3 text-sm">
-                {Object.entries(p.specs).map(([k, v]) => (
-                  <div key={k} className="rounded-md border border-border p-3">
-                    <dt className="text-xs text-muted-foreground">{k}</dt>
-                    <dd className="font-medium">{v}</dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
+            {Object.keys(p.specs ?? {}).length ? (
+              <div className="mt-10">
+                <h2 className="text-lg font-semibold">Specifications</h2>
+                <dl className="mt-3 grid grid-cols-2 gap-3 text-sm">
+                  {Object.entries(p.specs).map(([k, v]) => (
+                    <div key={k} className="rounded-md border border-border p-3">
+                      <dt className="text-xs text-muted-foreground">{k}</dt>
+                      <dd className="font-medium">{v}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            ) : null}
           </div>
         </div>
       </section>
