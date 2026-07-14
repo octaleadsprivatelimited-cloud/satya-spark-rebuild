@@ -217,8 +217,9 @@ export function SiteHeader() {
               <Button asChild variant="brand" size="sm" className="flex-1">
                 <Link to="/contact" onClick={() => setOpen(false)}>Get a Quote</Link>
               </Button>
-              <Button asChild size="sm" className="flex-1 bg-[oklch(0.65_0.17_150)] text-white hover:opacity-90">
-                <Link to="/contact" onClick={() => setOpen(false)}>Pay Now</Link>
+              <Button size="sm" className="flex-1 bg-[oklch(0.65_0.17_150)] text-white hover:opacity-90"
+                onClick={() => { setOpen(false); setPayOpen(true); }}>
+                Pay Now
               </Button>
             </div>
           </div>
