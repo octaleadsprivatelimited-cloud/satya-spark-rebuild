@@ -10,11 +10,12 @@ import { Seo } from "@/components/Seo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { getFeaturedProducts, listServices } from "@/lib/services/data-service";
-import { brandLogos, branches, testimonials, whatsappLink } from "@/lib/mock-data";
+import { getFeaturedProducts, listBrands, listServices } from "@/lib/services/data-service";
+import { branches, testimonials, whatsappLink } from "@/lib/mock-data";
 
 const featuredProductsQuery = { queryKey: ["products", "featured"], queryFn: getFeaturedProducts };
 const servicesQuery = { queryKey: ["services"], queryFn: listServices };
+const brandsQuery = { queryKey: ["brands"], queryFn: listBrands };
 
 const stats = [
   { n: "01", value: "13+", label: "Years experience", sub: "Industry expertise" },
