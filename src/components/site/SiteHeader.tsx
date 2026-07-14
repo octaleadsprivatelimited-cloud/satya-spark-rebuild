@@ -21,16 +21,12 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="container-page flex h-16 items-center justify-between gap-6">
-        <Link to="/" className="flex items-center gap-2 shrink-0">
-          <div className="grid h-9 w-9 place-items-center rounded-md bg-brand text-brand-foreground font-bold">
-            SP
-          </div>
-          <div className="hidden sm:block leading-tight">
-            <div className="text-sm font-bold tracking-wide text-brand">SATYA POWER</div>
-            <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
-              Technologys
-            </div>
-          </div>
+        <Link to="/" className="flex items-center gap-2 shrink-0" aria-label="Satya Power Technologys home">
+          <img
+            src="/ref/satya-logo-v1-CTyV3CUl.png"
+            alt="Satya Power Technologys"
+            className="h-10 md:h-12 w-auto object-contain"
+          />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-1">
