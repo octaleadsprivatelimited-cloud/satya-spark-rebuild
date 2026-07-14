@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { MapPin } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { PageHero } from "@/components/site/PageHero";
 import { Seo } from "@/components/Seo";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,15 +15,12 @@ export default function ProjectsPage() {
     <SiteLayout>
       <Seo title="Projects — Satya Power Technologys"
         description="Fiber optic deployments, backbone testing and EV service projects delivered across South India." />
-      <section className="bg-brand text-brand-foreground">
-        <div className="container-page py-16 md:py-20">
-          <p className="text-sm uppercase tracking-widest opacity-80">Selected work</p>
-          <h1 className="mt-3 text-4xl md:text-5xl font-bold">Projects</h1>
-          <p className="mt-3 max-w-2xl text-white/85">
-            A look at deployments and service programs we've delivered for ISPs, enterprises and government.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        image="/ref/hero-2-DdNjZtF1.jpg"
+        eyebrow="Selected work"
+        title="Projects"
+        subtitle="A look at deployments and service programs we've delivered for ISPs, enterprises and government."
+      />
       <section className="py-16">
         <div className="container-page grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {data.map((p) => (
