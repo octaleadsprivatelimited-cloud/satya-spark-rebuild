@@ -15,6 +15,7 @@ import AdminGuard from "@/pages/admin/AdminGuard";
 import AdminDashboard from "@/pages/admin/Dashboard";
 import AdminProducts from "@/pages/admin/Products";
 import AdminCategories from "@/pages/admin/Categories";
+import AdminBrands from "@/pages/admin/Brands";
 import AdminServices from "@/pages/admin/Services";
 import AdminProjects from "@/pages/admin/Projects";
 import AdminGallery from "@/pages/admin/Gallery";
