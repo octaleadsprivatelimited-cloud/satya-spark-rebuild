@@ -93,6 +93,16 @@ export interface SiteSettings {
   };
 }
 
+export interface Brand {
+  id: string;
+  name: string;
+  logo?: string; // Base64 or /ref URL
+  note?: string;
+  tier: "main" | "additional"; // main = INNO/Grandway/EXFO/Claron only
+  showOnHome: boolean;
+  order: number;
+}
+
 export interface AdminUser {
   uid: string;
   email: string;
