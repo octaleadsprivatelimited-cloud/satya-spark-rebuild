@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { toast } from "sonner";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { PageHero } from "@/components/site/PageHero";
 import { Seo } from "@/components/Seo";
-import { GoogleReviews } from "@/components/site/GoogleReviews";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,15 +40,13 @@ export default function ContactPage() {
     <SiteLayout>
       <Seo title="Contact — Satya Power Technologys"
         description="Quotes, service requests, partnership enquiries — we typically reply within hours. Reach us via phone, email or WhatsApp." />
-      <section className="bg-brand text-brand-foreground">
-        <div className="container-page py-16 md:py-24">
-          <p className="text-sm uppercase tracking-widest opacity-80">Get in touch</p>
-          <h1 className="mt-3 text-4xl md:text-6xl font-bold">Let's talk fiber.</h1>
-          <p className="mt-3 max-w-2xl text-white/85">
-            Quotes, service requests, partnership enquiries — we typically reply within hours.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        image="/ref/hyderabad-CC_eXlg0.jpg"
+        eyebrow="Get in touch"
+        title="Let's talk fiber."
+        size="lg"
+        subtitle="Quotes, service requests, partnership enquiries — we typically reply within hours."
+      />
 
       <section className="py-16">
         <div className="container-page grid gap-6 lg:grid-cols-2">
