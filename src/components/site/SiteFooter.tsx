@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { Instagram, Mail, MapPin, MessageCircle, Phone, Youtube } from "lucide-react";
 import { GoogleReviews } from "./GoogleReviews";
 import { whatsappLink } from "@/lib/mock-data";
