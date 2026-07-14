@@ -3,6 +3,7 @@ import { SiteHeader } from "./SiteHeader";
 import { SiteFooter } from "./SiteFooter";
 import { WhatsAppFab } from "./WhatsAppFab";
 import { GoogleReviewsFab } from "./GoogleReviewsFab";
+import { ContactCtaBar } from "./ContactCtaBar";
 
 export function SiteLayout({ children }: { children: ReactNode }) {
   return (
@@ -12,6 +13,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       <SiteFooter />
       <WhatsAppFab />
       <GoogleReviewsFab />
+      <ContactCtaBar />
     </div>
   );
 }
