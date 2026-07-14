@@ -3,6 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { PageHero } from "@/components/site/PageHero";
 import { Seo } from "@/components/Seo";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -32,15 +33,12 @@ export default function ProductsPage() {
     <SiteLayout>
       <Seo title="Products — Fiber Optic Tools | Satya Power Technologys"
         description="Browse fusion splicers, OTDRs, power meters, cleavers, VFLs and toolkits from INNO, VIAVI, EXFO, Grandway and more." />
-      <section className="bg-brand text-brand-foreground">
-        <div className="container-page py-16 md:py-20">
-          <p className="text-sm uppercase tracking-widest opacity-80">Catalogue</p>
-          <h1 className="mt-3 text-4xl md:text-5xl font-bold">Products</h1>
-          <p className="mt-3 max-w-2xl text-white/85">
-            Genuine fiber optic tools from authorized brands. Fusion splicers, OTDRs, power meters, cleavers, VFLs and complete toolkits.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        image="/ref/product-splicer-CaWSWLtE.jpg"
+        eyebrow="Catalogue"
+        title="Products"
+        subtitle="Genuine fiber optic tools from authorized brands. Fusion splicers, OTDRs, power meters, cleavers, VFLs and complete toolkits."
+      />
 
       <section className="py-10 border-b border-border">
         <div className="container-page grid gap-4 md:grid-cols-[1fr_auto_auto]">
