@@ -73,11 +73,32 @@ export const categories: Category[] = [
 
 export const brands = ["INNO", "Grandway", "Claron", "EXFO", "VIAVI", "SKL", "Fujikura", "Sumitomo"];
 
-export const brandLogos = [
-  { name: "INNO", src: "/ref/inno-BCaViBd-.png" },
-  { name: "Grandway", src: "/ref/grandway-C3AfGUQz.png" },
-  { name: "Claron", src: "/ref/claron-CcrHz5w9.png" },
+// The 4 fixed main partners — everything else must live in `additional`.
+export const MAIN_BRAND_NAMES = ["INNO", "INNO Instrument", "Grandway", "EXFO", "Claron"] as const;
+
+export const siteBrands: Brand[] = [
+  { id: "b1", name: "INNO Instrument", logo: "/ref/inno-BCaViBd-.png", note: "Fusion Splicers · OTDR", tier: "main", showOnHome: true, order: 1 },
+  { id: "b2", name: "Grandway", logo: "/ref/grandway-C3AfGUQz.png", note: "OTDR · Test Instruments", tier: "main", showOnHome: true, order: 2 },
+  { id: "b3", name: "EXFO", logo: undefined, note: "OTDR · Power Meters", tier: "main", showOnHome: true, order: 3 },
+  { id: "b4", name: "Claron", logo: "/ref/claron-CcrHz5w9.png", note: "Fiber Accessories", tier: "main", showOnHome: true, order: 4 },
+  { id: "b5", name: "Fujikura", note: "Premium fusion splicers, OTDRs — trusted globally for active and core alignment.", tier: "additional", showOnHome: true, order: 5 },
+  { id: "b6", name: "Sumitomo", note: "T-72C and Z2C series — engineered for reliability and field-proven precision.", tier: "additional", showOnHome: true, order: 6 },
+  { id: "b7", name: "VIAVI", note: "MTS-2000 modular platform OTDRs for metro, long-haul and FTTx testing.", tier: "additional", showOnHome: true, order: 7 },
+  { id: "b8", name: "T-berlus", note: "Mid-tier splicers ideal for FTTH and access-network installations.", tier: "additional", showOnHome: false, order: 8 },
+  { id: "b9", name: "Devise-h", note: "Authorized partner providing product support and warranty service.", tier: "additional", showOnHome: false, order: 9 },
+  { id: "b10", name: "Net Link", note: "Authorized partner providing product support and warranty service.", tier: "additional", showOnHome: false, order: 10 },
+  { id: "b11", name: "Uniway", note: "Authorized partner providing product support and warranty service.", tier: "additional", showOnHome: false, order: 11 },
+  { id: "b12", name: "Digisol", note: "Authorized partner providing product support and warranty service.", tier: "additional", showOnHome: false, order: 12 },
+  { id: "b13", name: "Syntech", note: "Authorized partner providing product support and warranty service.", tier: "additional", showOnHome: false, order: 13 },
+  { id: "b14", name: "GX", note: "Authorized partner providing product support and warranty service.", tier: "additional", showOnHome: false, order: 14 },
+  { id: "b15", name: "TP-Link", note: "Authorized partner providing product support and warranty service.", tier: "additional", showOnHome: false, order: 15 },
 ];
+
+// Legacy shim — kept because a few components imported the flat logo list.
+export const brandLogos = siteBrands
+  .filter((b) => b.tier === "main" && b.logo)
+  .map((b) => ({ name: b.name, src: b.logo as string }));
+
 
 const IMG = {
   splicer: "/ref/product-splicer-CaWSWLtE.jpg",
