@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { MapPin } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { PageHero } from "@/components/site/PageHero";
+import { QuoteCta } from "@/components/site/QuoteCta";
 import { Seo } from "@/components/Seo";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,9 +17,9 @@ export default function ProjectsPage() {
       <Seo title="Projects — Satya Power Technologys"
         description="Fiber optic deployments, backbone testing and EV service projects delivered across South India." />
       <PageHero
-        image="/ref/hero-2-DdNjZtF1.jpg"
         eyebrow="Selected work"
         title="Projects"
+        size="lg"
         subtitle="A look at deployments and service programs we've delivered for ISPs, enterprises and government."
       />
       <section className="py-16">
@@ -43,6 +44,8 @@ export default function ProjectsPage() {
           ))}
         </div>
       </section>
+      <QuoteCta />
     </SiteLayout>
   );
 }
+
