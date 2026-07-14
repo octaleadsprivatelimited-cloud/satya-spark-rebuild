@@ -43,6 +43,8 @@ const engineerCards = [
 export default function HomePage() {
   const { data: products } = useSuspenseQuery(featuredProductsQuery);
   const { data: services } = useSuspenseQuery(servicesQuery);
+  const { data: allBrands } = useSuspenseQuery(brandsQuery);
+  const homeBrands = allBrands.filter((b) => b.showOnHome);
 
   return (
     <SiteLayout>
