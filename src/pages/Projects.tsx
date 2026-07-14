@@ -1,31 +1,19 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { MapPin } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { Seo } from "@/components/Seo";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { listProjects } from "@/lib/services/data-service";
 
 const q = { queryKey: ["projects"], queryFn: listProjects };
 
-export const Route = createFileRoute("/projects")({
-  head: () => ({
-    meta: [
-      { title: "Projects — Satya Power Technologys" },
-      { name: "description", content: "Fiber optic deployments, backbone testing and EV service projects delivered across South India." },
-      { property: "og:title", content: "Projects" },
-      { property: "og:description", content: "Selected work: FTTH, backbone, campus networks and EV fleets." },
-    ],
-    links: [{ rel: "canonical", href: "/projects" }],
-  }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(q),
-  component: ProjectsPage,
-});
-
-function ProjectsPage() {
+export default function ProjectsPage() {
   const { data } = useSuspenseQuery(q);
   return (
     <SiteLayout>
+      <Seo title="Projects — Satya Power Technologys"
+        description="Fiber optic deployments, backbone testing and EV service projects delivered across South India." />
       <section className="bg-brand text-brand-foreground">
         <div className="container-page py-16 md:py-20">
           <p className="text-sm uppercase tracking-widest opacity-80">Selected work</p>

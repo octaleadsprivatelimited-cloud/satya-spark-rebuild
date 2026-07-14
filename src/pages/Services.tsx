@@ -1,31 +1,19 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import * as Icons from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { Seo } from "@/components/Seo";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { listServices } from "@/lib/services/data-service";
 
 const servicesQuery = { queryKey: ["services"], queryFn: listServices };
 
-export const Route = createFileRoute("/services")({
-  head: () => ({
-    meta: [
-      { title: "Services — Fiber & EV Battery | Satya Power Technologys" },
-      { name: "description", content: "Fusion splicer repair, OTDR calibration, on-site support, AMC contracts and EV battery servicing across AP & Telangana." },
-      { property: "og:title", content: "Our Services" },
-      { property: "og:description", content: "Factory-grade fiber optic service and EV battery repair." },
-    ],
-    links: [{ rel: "canonical", href: "/services" }],
-  }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(servicesQuery),
-  component: ServicesPage,
-});
-
-function ServicesPage() {
+export default function ServicesPage() {
   const { data } = useSuspenseQuery(servicesQuery);
   return (
     <SiteLayout>
+      <Seo title="Services — Fiber & EV Battery | Satya Power Technologys"
+        description="Fusion splicer repair, OTDR calibration, on-site support, AMC contracts and EV battery servicing across AP & Telangana." />
       <section className="bg-brand text-brand-foreground">
         <div className="container-page py-16 md:py-20">
           <p className="text-sm uppercase tracking-widest opacity-80">What we do</p>

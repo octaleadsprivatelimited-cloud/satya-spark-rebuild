@@ -1,4 +1,4 @@
-import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState, type ReactNode } from "react";
 import {
   BarChart3,
@@ -34,7 +34,7 @@ const items = [
 ] as const;
 
 export function AdminShell({ children }: { children: ReactNode }) {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const pathname = useLocation().pathname;
   const navigate = useNavigate();
   const [user, setUser] = useState<ReturnType<typeof getCurrentUser>>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -50,7 +50,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
   async function onSignOut() {
     await signOut();
-    navigate({ to: "/admin/login", replace: true });
+    navigate("/admin/login", { replace: true });
   }
 
   const nav = (

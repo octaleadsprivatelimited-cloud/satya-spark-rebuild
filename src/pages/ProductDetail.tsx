@@ -1,63 +1,49 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { Link, useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Check, Phone } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { Seo } from "@/components/Seo";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getProduct } from "@/lib/services/data-service";
 
-const productQuery = (slug: string) => ({
-  queryKey: ["product", slug],
-  queryFn: () => getProduct(slug),
-});
+export default function ProductDetailPage() {
+  const { slug = "" } = useParams();
+  const { data: p, isLoading } = useQuery({
+    queryKey: ["product", slug],
+    queryFn: () => getProduct(slug),
+  });
 
-export const Route = createFileRoute("/products/$slug")({
-  loader: async ({ params, context }) => {
-    const p = await context.queryClient.ensureQueryData(productQuery(params.slug));
-    if (!p) throw notFound();
-    return p;
-  },
-  head: ({ loaderData }) => ({
-    meta: loaderData
-      ? [
-          { title: `${loaderData.name} — ${loaderData.brand} | Satya Power Technologys` },
-          { name: "description", content: loaderData.shortDescription },
-          { property: "og:title", content: loaderData.name },
-          { property: "og:description", content: loaderData.shortDescription },
-          { property: "og:image", content: loaderData.image },
-          { property: "og:type", content: "product" },
-        ]
-      : [{ title: "Product — Satya Power Technologys" }],
-  }),
-  notFoundComponent: () => (
-    <SiteLayout>
-      <div className="container-page py-24 text-center">
-        <h1 className="text-3xl font-bold">Product not found</h1>
-        <Button asChild className="mt-6" variant="brand">
-          <Link to="/products">Back to products</Link>
-        </Button>
-      </div>
-    </SiteLayout>
-  ),
-  errorComponent: ({ error, reset }) => (
-    <SiteLayout>
-      <div className="container-page py-24 text-center">
-        <h1 className="text-3xl font-bold">Something went wrong</h1>
-        <p className="mt-2 text-muted-foreground">{error.message}</p>
-        <Button className="mt-6" onClick={reset}>Try again</Button>
-      </div>
-    </SiteLayout>
-  ),
-  component: ProductDetail,
-});
+  if (isLoading) {
+    return (
+      <SiteLayout>
+        <div className="container-page py-24 text-center text-muted-foreground">Loading…</div>
+      </SiteLayout>
+    );
+  }
 
-function ProductDetail() {
-  const { slug } = Route.useParams();
-  const { data: p } = useSuspenseQuery(productQuery(slug));
-  if (!p) return null;
+  if (!p) {
+    return (
+      <SiteLayout>
+        <Seo title="Product not found" noIndex />
+        <div className="container-page py-24 text-center">
+          <h1 className="text-3xl font-bold">Product not found</h1>
+          <Button asChild className="mt-6" variant="brand">
+            <Link to="/products">Back to products</Link>
+          </Button>
+        </div>
+      </SiteLayout>
+    );
+  }
 
   return (
     <SiteLayout>
+      <Seo
+        title={`${p.name} — ${p.brand} | Satya Power Technologys`}
+        description={p.shortDescription}
+        image={p.image}
+        type="product"
+      />
       <section className="py-10">
         <div className="container-page">
           <Link to="/products" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-brand">
@@ -83,9 +69,7 @@ function ProductDetail() {
                 </a>
               </Button>
               <Button asChild variant="brandOutline" size="lg">
-                <a href="tel:+919542840444">
-                  <Phone className="h-4 w-4" /> Call sales
-                </a>
+                <a href="tel:+919542840444"><Phone className="h-4 w-4" /> Call sales</a>
               </Button>
             </div>
 

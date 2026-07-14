@@ -1,21 +1,12 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
-  ArrowRight,
-  Award,
-  BatteryCharging,
-  Factory,
-  MapPin,
-  Phone,
-  ShieldCheck,
-  Sparkles,
-  Truck,
-  Users,
-  Wrench,
-  Zap,
+  ArrowRight, Award, BatteryCharging, Factory, MapPin, Phone,
+  ShieldCheck, Sparkles, Truck, Users, Wrench, Zap,
 } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { HeroSlider } from "@/components/site/HeroSlider";
+import { Seo } from "@/components/Seo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -24,29 +15,6 @@ import { brandLogos, branches, testimonials, whatsappLink } from "@/lib/mock-dat
 
 const featuredProductsQuery = { queryKey: ["products", "featured"], queryFn: getFeaturedProducts };
 const servicesQuery = { queryKey: ["services"], queryFn: listServices };
-
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Satya Power Technologys — Fiber Optic Tools for AP & Telangana" },
-      {
-        name: "description",
-        content:
-          "Authorized distributor for Inno, Grandway, Claron & EXFO fiber optic tools. Sales and service across Andhra Pradesh and Telangana with EV battery repair services.",
-      },
-      { property: "og:title", content: "Satya Power Technologys" },
-      { property: "og:description", content: "Fiber optic tools, service and EV battery repair across AP & Telangana." },
-      { property: "og:type", content: "website" },
-    ],
-  }),
-  loader: async ({ context }) => {
-    await Promise.all([
-      context.queryClient.ensureQueryData(featuredProductsQuery),
-      context.queryClient.ensureQueryData(servicesQuery),
-    ]);
-  },
-  component: HomePage,
-});
 
 const stats = [
   { n: "01", value: "13+", label: "Years experience", sub: "Industry expertise" },
@@ -71,15 +39,18 @@ const engineerCards = [
   { title: "Quality Control", sub: "Every product tested & verified", img: "/ref/engineer-2-CV9e-2Ti.jpg" },
 ];
 
-function HomePage() {
+export default function HomePage() {
   const { data: products } = useSuspenseQuery(featuredProductsQuery);
   const { data: services } = useSuspenseQuery(servicesQuery);
 
   return (
     <SiteLayout>
+      <Seo
+        title="Satya Power Technologys — Fiber Optic Tools for AP & Telangana"
+        description="Authorized distributor for Inno, Grandway, Claron & EXFO fiber optic tools. Sales and service across Andhra Pradesh and Telangana with EV battery repair services."
+      />
       <HeroSlider />
 
-      {/* STATS */}
       <section className="bg-brand text-brand-foreground">
         <div className="container-page py-14">
           <p className="text-sm uppercase tracking-widest opacity-80">Trusted across India</p>
@@ -102,7 +73,6 @@ function HomePage() {
         </div>
       </section>
 
-      {/* BRANDS marquee */}
       <section className="py-12 bg-secondary/60 border-y border-border">
         <div className="container-page">
           <p className="text-center text-xs uppercase tracking-widest text-muted-foreground mb-6">
@@ -110,24 +80,17 @@ function HomePage() {
           </p>
           <div className="flex flex-wrap gap-x-16 gap-y-6 justify-center items-center">
             {[...brandLogos, ...brandLogos].map((b, idx) => (
-              <img
-                key={`${b.name}-${idx}`}
-                src={b.src}
-                alt={b.name}
+              <img key={`${b.name}-${idx}`} src={b.src} alt={b.name}
                 className="h-10 md:h-12 w-auto object-contain opacity-90 grayscale hover:grayscale-0 transition"
-                loading="lazy"
-              />
+                loading="lazy" />
             ))}
             {["EXFO", "VIAVI", "SKL", "Fujikura", "Sumitomo"].map((b) => (
-              <div key={b} className="text-xl md:text-2xl font-bold text-muted-foreground/70 tracking-widest">
-                {b}
-              </div>
+              <div key={b} className="text-xl md:text-2xl font-bold text-muted-foreground/70 tracking-widest">{b}</div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* FEATURED PRODUCTS */}
       <section className="py-20">
         <div className="container-page">
           <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
@@ -137,54 +100,36 @@ function HomePage() {
               <p className="mt-2 text-sm text-muted-foreground">500+ products across splicers, OTDRs, meters, cleavers & spares.</p>
             </div>
             <Button asChild variant="brandOutline">
-              <Link to="/products">
-                View all <ArrowRight className="h-4 w-4" />
-              </Link>
+              <Link to="/products">View all <ArrowRight className="h-4 w-4" /></Link>
             </Button>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {products.slice(0, 8).map((p) => (
               <Card key={p.id} className="group overflow-hidden h-full transition-shadow hover:shadow-[var(--shadow-elegant)]">
-                  <div className="aspect-[4/3] relative overflow-hidden bg-secondary">
-                    <img
-                      src={p.image}
-                      alt={p.name}
-                      loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <Badge className="absolute top-3 left-3 bg-amber text-amber-foreground border-0">
-                      Featured
-                    </Badge>
+                <div className="aspect-[4/3] relative overflow-hidden bg-secondary">
+                  <img src={p.image} alt={p.name} loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  <Badge className="absolute top-3 left-3 bg-amber text-amber-foreground border-0">Featured</Badge>
+                </div>
+                <CardContent className="p-4">
+                  <p className="text-xs text-muted-foreground">{p.brand}</p>
+                  <h3 className="mt-1 font-semibold leading-tight">
+                    <Link to={`/products/${p.slug}`} className="hover:text-brand">{p.name}</Link>
+                  </h3>
+                  <p className="mt-2 text-xs text-muted-foreground">{p.categoryName}</p>
+                  <div className="mt-3 flex items-center justify-between text-xs">
+                    <a href={whatsappLink(`Hello, I'd like a quote for ${p.name}.`)}
+                      target="_blank" rel="noreferrer"
+                      className="text-brand font-semibold hover:underline">Get a quote</a>
+                    <Link to={`/products/${p.slug}`} className="text-muted-foreground hover:text-brand">View details →</Link>
                   </div>
-                  <CardContent className="p-4">
-                    <p className="text-xs text-muted-foreground">{p.brand}</p>
-                    <h3 className="mt-1 font-semibold leading-tight">
-                      <Link to="/products/$slug" params={{ slug: p.slug }} className="hover:text-brand">
-                        {p.name}
-                      </Link>
-                    </h3>
-                    <p className="mt-2 text-xs text-muted-foreground">{p.categoryName}</p>
-                    <div className="mt-3 flex items-center justify-between text-xs">
-                      <a
-                        href={whatsappLink(`Hello, I'd like a quote for ${p.name}.`)}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-brand font-semibold hover:underline"
-                      >
-                        Get a quote
-                      </a>
-                      <Link to="/products/$slug" params={{ slug: p.slug }} className="text-muted-foreground hover:text-brand">
-                        View details →
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* BRANCHES */}
       <section className="py-20 bg-secondary/40">
         <div className="container-page">
           <p className="text-sm uppercase tracking-widest text-brand font-semibold">Our presence</p>
@@ -203,10 +148,8 @@ function HomePage() {
                     <MapPin className="h-4 w-4" /> {b.city}
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">{b.type}</p>
-                  <a
-                    href={`tel:${b.phone.replace(/\s/g, "")}`}
-                    className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-brand hover:underline"
-                  >
+                  <a href={`tel:${b.phone.replace(/\s/g, "")}`}
+                    className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-brand hover:underline">
                     <Phone className="h-3.5 w-3.5" /> Contact
                   </a>
                 </CardContent>
@@ -216,7 +159,6 @@ function HomePage() {
         </div>
       </section>
 
-      {/* EV SECTION */}
       <section className="py-20">
         <div className="container-page grid gap-10 lg:grid-cols-2 items-center">
           <div>
@@ -233,60 +175,42 @@ function HomePage() {
                 <BatteryCharging className="h-6 w-6 text-brand" />
                 <h3 className="mt-2 font-semibold">EV Battery Repair & Service</h3>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Comprehensive health diagnostics, safety testing, capacity validation and servicing to restore original battery efficiency.
+                  Comprehensive health diagnostics, safety testing, capacity validation and servicing.
                 </p>
               </div>
               <div className="rounded-lg border border-border p-4">
                 <Zap className="h-6 w-6 text-brand" />
                 <h3 className="mt-2 font-semibold">Battery Cells Replacement</h3>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Cost-effective replacement of individual degraded or faulty cell modules to extend the lifecycle of your pack.
+                  Cost-effective replacement of individual degraded or faulty cell modules.
                 </p>
               </div>
             </div>
             <Button asChild variant="brand" size="lg" className="mt-6">
-              <a
-                href={whatsappLink(
-                  "Hello SATYA POWER TECHNOLOGYS, I am interested in your EV battery repair and cell replacement services.",
-                )}
-                target="_blank"
-                rel="noreferrer"
-              >
+              <a href={whatsappLink("Hello, I am interested in your EV battery repair services.")}
+                target="_blank" rel="noreferrer">
                 Inquire on WhatsApp <ArrowRight className="h-4 w-4" />
               </a>
             </Button>
           </div>
           <div className="rounded-2xl overflow-hidden shadow-[var(--shadow-elegant)]">
-            <img
-              src="/ref/ev-service-B4BVgvt-.png"
-              alt="EV Battery Repair Service"
-              loading="lazy"
-              className="w-full h-full object-cover"
-            />
+            <img src="/ref/ev-service-B4BVgvt-.png" alt="EV Battery Repair Service" loading="lazy"
+              className="w-full h-full object-cover" />
           </div>
         </div>
       </section>
 
-      {/* WHY US — engineer image grid */}
       <section className="py-20 bg-secondary/40">
         <div className="container-page">
           <p className="text-sm uppercase tracking-widest text-brand font-semibold">Why Satya Power Technologys</p>
           <h2 className="mt-2 text-3xl md:text-4xl font-bold text-balance">
             Built for engineers. Trusted by professionals.
           </h2>
-          <p className="mt-3 text-muted-foreground max-w-2xl">
-            Six reasons customers across two states keep coming back for sales, service and support.
-          </p>
-
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {engineerCards.map((c) => (
               <div key={c.title} className="group relative overflow-hidden rounded-xl aspect-[3/4]">
-                <img
-                  src={c.img}
-                  alt={c.title}
-                  loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
+                <img src={c.img} alt={c.title} loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-brand/90 via-brand/40 to-transparent" />
                 <div className="absolute bottom-4 left-4 right-4 text-white">
                   <div className="font-semibold">{c.title}</div>
@@ -295,7 +219,6 @@ function HomePage() {
               </div>
             ))}
           </div>
-
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {reasons.map((r) => (
               <Card key={r.title} className="p-6">
@@ -308,7 +231,6 @@ function HomePage() {
         </div>
       </section>
 
-      {/* SERVICES quick strip */}
       <section className="py-20">
         <div className="container-page">
           <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
@@ -334,7 +256,6 @@ function HomePage() {
         </div>
       </section>
 
-      {/* TESTIMONIALS */}
       <section className="py-20 bg-secondary/40">
         <div className="container-page">
           <p className="text-sm uppercase tracking-widest text-brand font-semibold">Customer Stories</p>
@@ -342,7 +263,7 @@ function HomePage() {
           <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {testimonials.map((t) => (
               <Card key={t.name} className="p-6">
-                <p className="text-foreground/80">“{t.quote}”</p>
+                <p className="text-foreground/80">"{t.quote}"</p>
                 <div className="mt-4 flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full bg-brand text-brand-foreground grid place-items-center text-sm font-semibold">
                     {t.name.split(" ").map((x) => x[0]).join("").slice(0, 2)}
@@ -358,17 +279,14 @@ function HomePage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="py-20">
         <div className="container-page">
           <div className="rounded-2xl bg-brand text-brand-foreground p-10 md:p-14 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
             <div>
               <p className="text-sm uppercase tracking-widest opacity-80">Get in touch</p>
-              <h2 className="mt-2 text-3xl md:text-4xl font-bold text-balance">
-                Need a quote or on-site service?
-              </h2>
+              <h2 className="mt-2 text-3xl md:text-4xl font-bold text-balance">Need a quote or on-site service?</h2>
               <p className="mt-3 text-white/85 max-w-2xl">
-                Our team responds within hours across Andhra Pradesh & Telangana — sales, repair and emergency support.
+                Our team responds within hours across Andhra Pradesh & Telangana.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
@@ -378,9 +296,6 @@ function HomePage() {
               <Button asChild size="lg" variant="outline" className="bg-transparent border-white/40 text-white hover:bg-white hover:text-brand">
                 <Link to="/contact">Request a quote</Link>
               </Button>
-              <a href="tel:+919542840444" className="text-sm text-white/80 self-center underline">
-                or call +91 95428 40444
-              </a>
             </div>
           </div>
         </div>

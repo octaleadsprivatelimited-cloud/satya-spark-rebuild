@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useLocation } from "react-router-dom";
 import { Menu, Phone, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -13,11 +13,11 @@ const nav = [
   { to: "/gallery", label: "Gallery" },
   { to: "/blog", label: "Blog" },
   { to: "/contact", label: "Contact" },
-] as const;
+];
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { pathname } = useLocation();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
