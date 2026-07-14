@@ -96,8 +96,9 @@ export function MultiImageUpload({ value = [], onChange }: MultiProps) {
     <div className="space-y-2">
       <input ref={ref} type="file" accept="image/*" multiple className="hidden"
         onChange={(e) => { handle(e.target.files); if (ref.current) ref.current.value = ""; }} />
-      <Button type="button" variant="outline" size="sm" onClick={() => ref.current?.click()}>
-        <Upload className="h-4 w-4" /> Add images
+      <Button type="button" variant="outline" size="sm" disabled={busy} onClick={() => ref.current?.click()}>
+        {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+        {busy ? "Compressing…" : "Add images"}
       </Button>
       {value.length ? (
         <div className="grid grid-cols-3 gap-2">
