@@ -81,15 +81,27 @@ export default function HomePage() {
           <p className="text-center text-xs uppercase tracking-widest text-muted-foreground mb-6">
             Authorized Brands & Partners
           </p>
-          <div className="flex flex-wrap gap-x-16 gap-y-6 justify-center items-center">
-            {[...brandLogos, ...brandLogos].map((b, idx) => (
-              <img key={`${b.name}-${idx}`} src={b.src} alt={b.name}
-                className="h-10 md:h-12 w-auto object-contain opacity-90 grayscale hover:grayscale-0 transition"
-                loading="lazy" />
-            ))}
-            {["EXFO", "VIAVI", "SKL", "Fujikura", "Sumitomo"].map((b) => (
-              <div key={b} className="text-xl md:text-2xl font-bold text-muted-foreground/70 tracking-widest">{b}</div>
-            ))}
+          <div className="flex flex-wrap gap-x-12 gap-y-6 justify-center items-center">
+            {homeBrands.map((b) =>
+              b.logo ? (
+                <img
+                  key={b.id}
+                  src={b.logo}
+                  alt={b.name}
+                  title={b.name}
+                  className="h-8 md:h-10 w-auto object-contain opacity-90 grayscale hover:grayscale-0 transition"
+                  loading="lazy"
+                />
+              ) : (
+                <div
+                  key={b.id}
+                  title={b.name}
+                  className="text-base md:text-lg font-bold text-muted-foreground/70 tracking-widest"
+                >
+                  {b.name}
+                </div>
+              ),
+            )}
           </div>
         </div>
       </section>
