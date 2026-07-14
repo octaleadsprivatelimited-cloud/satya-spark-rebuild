@@ -10,6 +10,7 @@ import {
   Menu,
   Package,
   Settings,
+  Tag,
   UserCircle,
   Wrench,
   Briefcase,
