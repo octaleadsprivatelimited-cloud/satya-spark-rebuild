@@ -12,9 +12,12 @@ import {
   products as mockProducts,
   projects as mockProjects,
   services as mockServices,
+  siteBrands as mockBrands,
   siteSettings as mockSettings,
+  MAIN_BRAND_NAMES,
 } from "../mock-data";
 import type {
+  Brand,
   Category,
   GalleryItem,
   Inquiry,
