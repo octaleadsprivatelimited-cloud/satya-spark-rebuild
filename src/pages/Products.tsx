@@ -91,18 +91,26 @@ export default function ProductsPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-4 gap-3">
             {mainBrands.map((b) => (
-              <div key={b.name} className="rounded-md border border-border bg-white aspect-square grid place-items-center p-6 hover:shadow-[var(--shadow-elegant)] transition-shadow">
+              <div
+                key={b.id}
+                className="rounded-md border border-border bg-white aspect-[4/3] grid place-items-center p-3 hover:shadow-[var(--shadow-elegant)] transition-shadow"
+                title={b.name}
+              >
                 <div className="text-center">
-                  {b.src ? (
-                    <img src={b.src} alt={b.name} className="max-h-14 w-auto object-contain mx-auto" />
+                  {b.logo ? (
+                    <img src={b.logo} alt={b.name} className="max-h-10 w-auto object-contain mx-auto" />
                   ) : (
-                    <div className="text-2xl font-black text-brand tracking-wider">{b.name.split(" ")[0]}</div>
+                    <div className="text-lg font-black text-brand tracking-wider">
+                      {b.name.split(" ")[0]}
+                    </div>
                   )}
-                  <div className="mt-3 text-[10px] uppercase tracking-widest text-muted-foreground">
-                    {b.note}
-                  </div>
+                  {b.note ? (
+                    <div className="mt-2 text-[9px] uppercase tracking-widest text-muted-foreground line-clamp-2">
+                      {b.note}
+                    </div>
+                  ) : null}
                 </div>
               </div>
             ))}
@@ -122,19 +130,26 @@ export default function ProductsPage() {
               Premium brands available in-region — all backed by our own in-region support.
             </p>
           </div>
-          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-8 grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {additionalBrands.map((b) => (
-              <div key={b.name} className="rounded-md border border-border bg-white p-5">
-                <div className="flex items-center justify-between">
-                  <div className="font-bold">{b.name}</div>
-                  <span className="text-[10px] uppercase tracking-widest text-brand">Partner</span>
-                </div>
-                <p className="mt-2 text-xs text-muted-foreground">{b.note}</p>
+              <div
+                key={b.id}
+                className="rounded-md border border-border bg-white aspect-[4/3] grid place-items-center p-3 hover:shadow-[var(--shadow-elegant)] transition-shadow"
+                title={b.name}
+              >
+                {b.logo ? (
+                  <img src={b.logo} alt={b.name} className="max-h-10 w-auto object-contain" />
+                ) : (
+                  <div className="text-sm font-black text-brand/80 tracking-wider text-center">
+                    {b.name}
+                  </div>
+                )}
               </div>
             ))}
           </div>
         </div>
       </section>
+
 
       {/* Catalog */}
       <section id="catalog" className="py-16">
