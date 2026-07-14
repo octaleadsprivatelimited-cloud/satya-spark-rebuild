@@ -1,5 +1,6 @@
 import type {
   BlogPost,
+  Brand,
   Category,
   GalleryItem,
   Inquiry,
