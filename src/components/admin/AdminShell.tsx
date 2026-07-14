@@ -24,6 +24,7 @@ const items = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/admin/products", label: "Products", icon: Package },
   { to: "/admin/categories", label: "Categories", icon: FolderTree },
+  { to: "/admin/brands", label: "Brands", icon: Tag },
   { to: "/admin/services", label: "Services", icon: Wrench },
   { to: "/admin/projects", label: "Projects", icon: Briefcase },
   { to: "/admin/gallery", label: "Gallery", icon: ImageIcon },
