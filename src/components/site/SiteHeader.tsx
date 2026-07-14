@@ -3,6 +3,8 @@ import { ChevronDown, Headphones, Menu, Search, User, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { PayNowDialog } from "./PayNowDialog";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 type NavItem = { to: string; label: string; children?: { to: string; label: string }[] };
 
@@ -64,6 +66,7 @@ const nav: NavItem[] = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const [payOpen, setPayOpen] = useState(false);
   const [q, setQ] = useState("");
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -112,15 +115,16 @@ export function SiteHeader() {
             <Link to="/contact" className="hidden md:inline-flex items-center gap-1.5 text-sm font-medium text-foreground/80 hover:text-brand">
               <Headphones className="h-4 w-4" /> Contact Us
             </Link>
-            <Link
-              to="/contact"
+            <button
+              type="button"
+              onClick={() => setPayOpen(true)}
               className="hidden sm:inline-flex items-center rounded-md bg-[oklch(0.65_0.17_150)] px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
             >
               Pay Now
-            </Link>
+            </button>
             <div className="hidden lg:flex items-center gap-1 text-sm font-medium text-foreground/80">
               <span className="grid h-5 w-5 place-items-center rounded-sm bg-brand text-[10px] font-bold text-white">IN</span>
-              IN/EN <ChevronDown className="h-3.5 w-3.5" />
+              <LanguageSwitcher />
             </div>
             <button
               className="lg:hidden p-2 rounded-md hover:bg-accent"
@@ -213,13 +217,15 @@ export function SiteHeader() {
               <Button asChild variant="brand" size="sm" className="flex-1">
                 <Link to="/contact" onClick={() => setOpen(false)}>Get a Quote</Link>
               </Button>
-              <Button asChild size="sm" className="flex-1 bg-[oklch(0.65_0.17_150)] text-white hover:opacity-90">
-                <Link to="/contact" onClick={() => setOpen(false)}>Pay Now</Link>
+              <Button size="sm" className="flex-1 bg-[oklch(0.65_0.17_150)] text-white hover:opacity-90"
+                onClick={() => { setOpen(false); setPayOpen(true); }}>
+                Pay Now
               </Button>
             </div>
           </div>
         </div>
       ) : null}
+      <PayNowDialog open={payOpen} onOpenChange={setPayOpen} />
     </header>
   );
 }
