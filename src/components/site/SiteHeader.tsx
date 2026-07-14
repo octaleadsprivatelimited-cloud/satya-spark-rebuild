@@ -225,6 +225,7 @@ export function SiteHeader() {
           </div>
         </div>
       ) : null}
+      <PayNowDialog open={payOpen} onOpenChange={setPayOpen} />
     </header>
   );
 }
