@@ -4,6 +4,7 @@ import { Play, X } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { PageHero } from "@/components/site/PageHero";
 import { Seo } from "@/components/Seo";
+import { QuoteCta } from "@/components/site/QuoteCta";
 import { listGallery } from "@/lib/services/data-service";
 import { getYouTubeEmbed } from "@/lib/media";
 import { cn } from "@/lib/utils";
