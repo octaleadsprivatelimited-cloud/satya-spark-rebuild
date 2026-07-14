@@ -66,6 +66,7 @@ const nav: NavItem[] = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const [payOpen, setPayOpen] = useState(false);
   const [q, setQ] = useState("");
   const { pathname } = useLocation();
   const navigate = useNavigate();
