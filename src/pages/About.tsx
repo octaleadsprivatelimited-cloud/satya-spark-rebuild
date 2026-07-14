@@ -1,5 +1,6 @@
 import { Award, HeartHandshake, MapPin, Phone, Target, Users } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { PageHero } from "@/components/site/PageHero";
 import { Seo } from "@/components/Seo";
 import { Card } from "@/components/ui/card";
 import { offices } from "@/lib/mock-data";
@@ -31,16 +32,13 @@ export default function AboutPage() {
         title="About — Satya Power Technologys"
         description="Built on trust. Backed by service. Satya Power Technologys is a manufacturer and distributor of fusion splicers, OTDRs and fiber optic toolkits since 2013."
       />
-      <section className="bg-brand text-brand-foreground">
-        <div className="container-page py-20 md:py-28">
-          <p className="text-sm uppercase tracking-widest opacity-80">Our story</p>
-          <h1 className="mt-3 text-4xl md:text-6xl font-bold text-balance">Built on trust. Backed by service.</h1>
-          <p className="mt-5 max-w-3xl text-white/85 text-lg">
-            Service first, sales next. SATYA POWER TECHNOLOGYS is a leading manufacturer and distributor
-            of fusion splicers, OTDRs and fiber optic toolkits since 2013.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        image="/ref/team-CMydRHty.jpg"
+        eyebrow="Our story"
+        title="Built on trust. Backed by service."
+        size="lg"
+        subtitle="Service first, sales next. SATYA POWER TECHNOLOGYS is a leading manufacturer and distributor of fusion splicers, OTDRs and fiber optic toolkits since 2013."
+      />
 
       <section className="py-20">
         <div className="container-page">
