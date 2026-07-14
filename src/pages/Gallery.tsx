@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Play, X } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { PageHero } from "@/components/site/PageHero";
 import { Seo } from "@/components/Seo";
 import { listGallery } from "@/lib/services/data-service";
 import { getYouTubeEmbed } from "@/lib/media";
@@ -20,12 +21,12 @@ export default function GalleryPage() {
   return (
     <SiteLayout>
       <Seo title="Gallery — Satya Power Technologys" description="Photos and videos of our service, field work, products, branches and team." />
-      <section className="bg-brand text-brand-foreground">
-        <div className="container-page py-16 md:py-20">
-          <p className="text-sm uppercase tracking-widest opacity-80">Moments</p>
-          <h1 className="mt-3 text-4xl md:text-5xl font-bold">Gallery</h1>
-        </div>
-      </section>
+      <PageHero
+        image="/ref/engineer-1-bcsnKP6b.jpg"
+        eyebrow="Moments"
+        title="Gallery"
+        subtitle="Photos and videos from our service, field work, products and team."
+      />
       <section className="py-10 border-b border-border">
         <div className="container-page flex flex-wrap gap-2">
           {cats.map((c) => (
