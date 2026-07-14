@@ -3,6 +3,8 @@ import { ChevronDown, Headphones, Menu, Search, User, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { PayNowDialog } from "./PayNowDialog";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 type NavItem = { to: string; label: string; children?: { to: string; label: string }[] };
 
