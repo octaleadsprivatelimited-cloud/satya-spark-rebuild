@@ -20,6 +20,9 @@ const brandsQuery = { queryKey: ["brands"], queryFn: listBrands };
 export default function ProductsPage() {
   const { data: products } = useSuspenseQuery(productsQuery);
   const { data: categories } = useSuspenseQuery(catsQuery);
+  const { data: allBrands } = useSuspenseQuery(brandsQuery);
+  const mainBrands = allBrands.filter((b) => b.tier === "main");
+  const additionalBrands = allBrands.filter((b) => b.tier === "additional");
   const [q, setQ] = useState("");
   const [cat, setCat] = useState("all");
   const [brand, setBrand] = useState("all");
