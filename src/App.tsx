@@ -7,7 +7,6 @@ import ProductDetailPage from "@/pages/ProductDetail";
 import ServicesPage from "@/pages/Services";
 import ProjectsPage from "@/pages/Projects";
 import GalleryPage from "@/pages/Gallery";
-import BlogPage from "@/pages/Blog";
 import ContactPage from "@/pages/Contact";
 import NotFoundPage from "@/pages/NotFound";
 
@@ -19,7 +18,6 @@ import AdminCategories from "@/pages/admin/Categories";
 import AdminServices from "@/pages/admin/Services";
 import AdminProjects from "@/pages/admin/Projects";
 import AdminGallery from "@/pages/admin/Gallery";
-import AdminBlog from "@/pages/admin/Blog";
 import AdminInquiries from "@/pages/admin/Inquiries";
 import AdminSettings from "@/pages/admin/Settings";
 import AdminProfile from "@/pages/admin/Profile";
@@ -44,8 +42,8 @@ export default function App() {
         <Route path="/services" element={<ServicesPage />} />
         <Route path="/projects" element={<ProjectsPage />} />
         <Route path="/gallery" element={<GalleryPage />} />
-        <Route path="/blog" element={<BlogPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/blog" element={<Navigate to="/" replace />} />
 
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin" element={<AdminGuard />}>
@@ -55,7 +53,6 @@ export default function App() {
           <Route path="services" element={<AdminServices />} />
           <Route path="projects" element={<AdminProjects />} />
           <Route path="gallery" element={<AdminGallery />} />
-          <Route path="blog" element={<AdminBlog />} />
           <Route path="inquiries" element={<AdminInquiries />} />
           <Route path="settings" element={<AdminSettings />} />
           <Route path="profile" element={<AdminProfile />} />

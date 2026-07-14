@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { Briefcase, Image as ImageIcon, Mail, Newspaper, Package, Wrench } from "lucide-react";
+import { Briefcase, Image as ImageIcon, Mail, Package, Wrench } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { AdminPageHeader } from "@/components/admin/AdminShell";
 import {
-  listBlog, listGallery, listInquiries, listProducts, listProjects, listServices,
+  listGallery, listInquiries, listProducts, listProjects, listServices,
 } from "@/lib/services/data-service";
 
 export default function AdminDashboard() {
@@ -11,7 +11,6 @@ export default function AdminDashboard() {
   const services = useQuery({ queryKey: ["services"], queryFn: listServices });
   const projects = useQuery({ queryKey: ["projects"], queryFn: listProjects });
   const gallery = useQuery({ queryKey: ["gallery"], queryFn: listGallery });
-  const blog = useQuery({ queryKey: ["blog"], queryFn: listBlog });
   const inquiries = useQuery({ queryKey: ["inquiries"], queryFn: listInquiries });
 
   const cards = [
@@ -19,7 +18,6 @@ export default function AdminDashboard() {
     { label: "Services", count: services.data?.length ?? "—", icon: Wrench },
     { label: "Projects", count: projects.data?.length ?? "—", icon: Briefcase },
     { label: "Gallery", count: gallery.data?.length ?? "—", icon: ImageIcon },
-    { label: "Blog Posts", count: blog.data?.length ?? "—", icon: Newspaper },
     { label: "Inquiries", count: inquiries.data?.length ?? "—", icon: Mail },
   ];
 

@@ -73,7 +73,6 @@ export function SiteFooter() {
             <li><Link to="/services" className="hover:text-amber">Services</Link></li>
             <li><Link to="/projects" className="hover:text-amber">Projects</Link></li>
             <li><Link to="/gallery" className="hover:text-amber">Gallery</Link></li>
-            <li><Link to="/blog" className="hover:text-amber">Blog</Link></li>
           </ul>
         </div>
 
