@@ -1,17 +1,27 @@
-import { useQuery } from "@tanstack/react-query";
-import { Briefcase, Image as ImageIcon, Mail, Package, Wrench } from "lucide-react";
+import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Briefcase, Database, Image as ImageIcon, Mail, Package, Wrench } from "lucide-react";
+import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { AdminPageHeader } from "@/components/admin/AdminShell";
 import {
-  listGallery, listInquiries, listProducts, listProjects, listServices,
+  listGallery,
+  listInquiries,
+  listProducts,
+  listProjects,
+  listServices,
+  seedFirestoreFromMock,
 } from "@/lib/services/data-service";
 
 export default function AdminDashboard() {
+  const qc = useQueryClient();
   const products = useQuery({ queryKey: ["products"], queryFn: listProducts });
   const services = useQuery({ queryKey: ["services"], queryFn: listServices });
   const projects = useQuery({ queryKey: ["projects"], queryFn: listProjects });
   const gallery = useQuery({ queryKey: ["gallery"], queryFn: listGallery });
   const inquiries = useQuery({ queryKey: ["inquiries"], queryFn: listInquiries });
+  const [seeding, setSeeding] = useState(false);
 
   const cards = [
     { label: "Products", count: products.data?.length ?? "—", icon: Package },
@@ -21,9 +31,40 @@ export default function AdminDashboard() {
     { label: "Inquiries", count: inquiries.data?.length ?? "—", icon: Mail },
   ];
 
+  const isEmpty =
+    (products.data?.length ?? 0) === 0 &&
+    (services.data?.length ?? 0) === 0 &&
+    (projects.data?.length ?? 0) === 0 &&
+    (gallery.data?.length ?? 0) === 0;
+
+  async function onSeed() {
+    if (!confirm("Populate empty Firestore collections with the built-in sample data?")) return;
+    setSeeding(true);
+    try {
+      const res = await seedFirestoreFromMock();
+      toast.success(
+        `Seeded: ${res.seeded.join(", ") || "nothing"}${res.skipped.length ? ` · Skipped (already present): ${res.skipped.join(", ")}` : ""}`,
+      );
+      await qc.invalidateQueries();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Seed failed");
+    } finally {
+      setSeeding(false);
+    }
+  }
+
   return (
     <>
-      <AdminPageHeader title="Dashboard" description="Overview of your website content and inquiries." />
+      <AdminPageHeader
+        title="Dashboard"
+        description="Overview of your website content and inquiries."
+        action={
+          <Button variant="outline" onClick={onSeed} disabled={seeding}>
+            <Database className="h-4 w-4" />
+            {seeding ? "Seeding…" : isEmpty ? "Seed sample data" : "Seed missing collections"}
+          </Button>
+        }
+      />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {cards.map((c) => (
           <Card key={c.label} className="p-5 flex items-center justify-between">
@@ -46,9 +87,12 @@ export default function AdminDashboard() {
                 <div className="text-sm font-medium">{i.name} — {i.subject}</div>
                 <div className="text-xs text-muted-foreground line-clamp-1">{i.message}</div>
               </div>
-              <span className="text-xs text-muted-foreground shrink-0">{i.createdAt}</span>
+              <span className="text-xs text-muted-foreground shrink-0">{i.createdAt?.slice(0, 10)}</span>
             </div>
           ))}
+          {(inquiries.data ?? []).length === 0 ? (
+            <div className="py-3 text-sm text-muted-foreground">No inquiries yet.</div>
+          ) : null}
         </div>
       </Card>
     </>

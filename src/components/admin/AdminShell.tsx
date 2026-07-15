@@ -18,7 +18,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { signOut, getCurrentUser } from "@/lib/services/auth-service";
+import { signOut, subscribeAuth } from "@/lib/services/auth-service";
+import type { AdminUser } from "@/lib/types";
 
 const items = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
@@ -36,12 +37,10 @@ const items = [
 export function AdminShell({ children }: { children: ReactNode }) {
   const pathname = useLocation().pathname;
   const navigate = useNavigate();
-  const [user, setUser] = useState<ReturnType<typeof getCurrentUser>>(null);
+  const [user, setUser] = useState<AdminUser | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  useEffect(() => {
-    setUser(getCurrentUser());
-  }, []);
+  useEffect(() => subscribeAuth(setUser), []);
 
   // Close the mobile drawer on route change.
   useEffect(() => {
