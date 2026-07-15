@@ -1,10 +1,29 @@
 /**
- * Data service layer.
+ * Data service — Firestore-backed.
  *
- * All UI components read/write through these async functions. Mock data
- * is mutated in-memory so admin CRUD works without a backend.
+ * All UI reads/writes go through these async functions. Documents are stored
+ * one-per-item under a collection matching the entity name. Site settings
+ * live in a single document at `settings/site`.
+ *
+ * Images are stored as Base64 strings on the document itself (compressed
+ * client-side to stay under Firestore's 1 MiB per-doc limit).
  */
 
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  setDoc,
+  updateDoc,
+  where,
+  writeBatch,
+} from "firebase/firestore";
+import { getDb } from "../firebase";
 import {
   categories as mockCategories,
   gallery as mockGallery,
@@ -27,29 +46,51 @@ import type {
   SiteSettings,
 } from "../types";
 
-const delay = (ms = 100) => new Promise((r) => setTimeout(r, ms));
 const uid = () => (crypto.randomUUID?.() ?? Math.random().toString(36).slice(2));
 const slugify = (s: string) =>
   s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
+const COL = {
+  products: "products",
+  categories: "categories",
+  services: "services",
+  projects: "projects",
+  gallery: "gallery",
+  inquiries: "inquiries",
+  brands: "brands",
+  settings: "settings",
+} as const;
+
+function db() {
+  return getDb();
+}
+
+async function listAll<T>(name: string): Promise<T[]> {
+  const snap = await getDocs(collection(db(), name));
+  return snap.docs.map((d) => ({ ...(d.data() as T), id: d.id } as T));
+}
+
 // ---------- Products ----------
 export async function listProducts(): Promise<Product[]> {
-  await delay();
-  return [...mockProducts];
+  const items = await listAll<Product>(COL.products);
+  return items.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
 }
 export async function getProduct(slug: string): Promise<Product | null> {
-  await delay();
-  return mockProducts.find((p) => p.slug === slug) ?? null;
+  const q = query(collection(db(), COL.products), where("slug", "==", slug), limit(1));
+  const snap = await getDocs(q);
+  const d = snap.docs[0];
+  return d ? ({ ...(d.data() as Product), id: d.id }) : null;
 }
 export async function getFeaturedProducts(): Promise<Product[]> {
-  await delay();
-  return mockProducts.filter((p) => p.featured);
+  const all = await listProducts();
+  return all.filter((p) => p.featured);
 }
 export async function createProduct(data: Partial<Product>): Promise<Product> {
-  await delay();
-  const cat = mockCategories.find((c) => c.id === data.categoryId);
+  const cats = await listCategories();
+  const cat = cats.find((c) => c.id === data.categoryId);
+  const id = uid();
   const item: Product = {
-    id: uid(),
+    id,
     slug: data.slug || slugify(data.name || "product"),
     name: data.name || "Untitled",
     brand: data.brand || "",
@@ -60,73 +101,66 @@ export async function createProduct(data: Partial<Product>): Promise<Product> {
     features: data.features || [],
     specs: data.specs || {},
     image: data.image || "/ref/product-splicer-CaWSWLtE.jpg",
-    featured: data.featured || false,
+    gallery: data.gallery || [],
+    videoUrl: data.videoUrl || "",
+    featured: !!data.featured,
     createdAt: new Date().toISOString().slice(0, 10),
   };
-  mockProducts.unshift(item);
+  await setDoc(doc(db(), COL.products, id), item);
   return item;
 }
 export async function updateProduct(id: string, data: Partial<Product>): Promise<Product | null> {
-  await delay();
-  const idx = mockProducts.findIndex((p) => p.id === id);
-  if (idx === -1) return null;
-  const cat = data.categoryId ? mockCategories.find((c) => c.id === data.categoryId) : undefined;
-  mockProducts[idx] = {
-    ...mockProducts[idx],
-    ...data,
-    ...(cat ? { categoryName: cat.name } : {}),
-  };
-  return mockProducts[idx];
+  let patch: Partial<Product> = { ...data };
+  if (data.categoryId) {
+    const cats = await listCategories();
+    const cat = cats.find((c) => c.id === data.categoryId);
+    if (cat) patch.categoryName = cat.name;
+  }
+  await updateDoc(doc(db(), COL.products, id), patch as Record<string, unknown>);
+  const s = await getDoc(doc(db(), COL.products, id));
+  return s.exists() ? ({ ...(s.data() as Product), id: s.id }) : null;
 }
 export async function deleteProduct(id: string): Promise<void> {
-  await delay();
-  const idx = mockProducts.findIndex((p) => p.id === id);
-  if (idx !== -1) mockProducts.splice(idx, 1);
+  await deleteDoc(doc(db(), COL.products, id));
 }
 
 // ---------- Categories ----------
 export async function listCategories(): Promise<Category[]> {
-  await delay();
-  return [...mockCategories];
+  return listAll<Category>(COL.categories);
 }
 export async function createCategory(data: Partial<Category>): Promise<Category> {
-  await delay();
+  const id = uid();
   const item: Category = {
-    id: uid(),
+    id,
     slug: data.slug || slugify(data.name || "category"),
     name: data.name || "Untitled",
     description: data.description,
     image: data.image,
   };
-  mockCategories.unshift(item);
+  await setDoc(doc(db(), COL.categories, id), item);
   return item;
 }
 export async function updateCategory(id: string, data: Partial<Category>): Promise<Category | null> {
-  await delay();
-  const idx = mockCategories.findIndex((c) => c.id === id);
-  if (idx === -1) return null;
-  mockCategories[idx] = { ...mockCategories[idx], ...data };
-  return mockCategories[idx];
+  await updateDoc(doc(db(), COL.categories, id), data as Record<string, unknown>);
+  const s = await getDoc(doc(db(), COL.categories, id));
+  return s.exists() ? ({ ...(s.data() as Category), id: s.id }) : null;
 }
 export async function deleteCategory(id: string): Promise<void> {
-  await delay();
-  const idx = mockCategories.findIndex((c) => c.id === id);
-  if (idx !== -1) mockCategories.splice(idx, 1);
+  await deleteDoc(doc(db(), COL.categories, id));
 }
 
 // ---------- Services ----------
 export async function listServices(): Promise<Service[]> {
-  await delay();
-  return [...mockServices];
+  return listAll<Service>(COL.services);
 }
 export async function getService(slug: string): Promise<Service | null> {
-  await delay();
-  return mockServices.find((s) => s.slug === slug) ?? null;
+  const all = await listServices();
+  return all.find((s) => s.slug === slug) ?? null;
 }
 export async function createService(data: Partial<Service>): Promise<Service> {
-  await delay();
+  const id = uid();
   const item: Service = {
-    id: uid(),
+    id,
     slug: data.slug || slugify(data.title || "service"),
     title: data.title || "Untitled",
     summary: data.summary || "",
@@ -134,35 +168,30 @@ export async function createService(data: Partial<Service>): Promise<Service> {
     icon: data.icon || "Wrench",
     image: data.image,
   };
-  mockServices.unshift(item);
+  await setDoc(doc(db(), COL.services, id), item);
   return item;
 }
 export async function updateService(id: string, data: Partial<Service>): Promise<Service | null> {
-  await delay();
-  const idx = mockServices.findIndex((s) => s.id === id);
-  if (idx === -1) return null;
-  mockServices[idx] = { ...mockServices[idx], ...data };
-  return mockServices[idx];
+  await updateDoc(doc(db(), COL.services, id), data as Record<string, unknown>);
+  const s = await getDoc(doc(db(), COL.services, id));
+  return s.exists() ? ({ ...(s.data() as Service), id: s.id }) : null;
 }
 export async function deleteService(id: string): Promise<void> {
-  await delay();
-  const idx = mockServices.findIndex((s) => s.id === id);
-  if (idx !== -1) mockServices.splice(idx, 1);
+  await deleteDoc(doc(db(), COL.services, id));
 }
 
 // ---------- Projects ----------
 export async function listProjects(): Promise<Project[]> {
-  await delay();
-  return [...mockProjects];
+  return listAll<Project>(COL.projects);
 }
 export async function getProject(slug: string): Promise<Project | null> {
-  await delay();
-  return mockProjects.find((p) => p.slug === slug) ?? null;
+  const all = await listProjects();
+  return all.find((p) => p.slug === slug) ?? null;
 }
 export async function createProject(data: Partial<Project>): Promise<Project> {
-  await delay();
+  const id = uid();
   const item: Project = {
-    id: uid(),
+    id,
     slug: data.slug || slugify(data.title || "project"),
     title: data.title || "Untitled",
     client: data.client || "",
@@ -172,89 +201,81 @@ export async function createProject(data: Partial<Project>): Promise<Project> {
     image: data.image || "/ref/hyderabad-CC_eXlg0.jpg",
     category: data.category || "General",
   };
-  mockProjects.unshift(item);
+  await setDoc(doc(db(), COL.projects, id), item);
   return item;
 }
 export async function updateProject(id: string, data: Partial<Project>): Promise<Project | null> {
-  await delay();
-  const idx = mockProjects.findIndex((p) => p.id === id);
-  if (idx === -1) return null;
-  mockProjects[idx] = { ...mockProjects[idx], ...data };
-  return mockProjects[idx];
+  await updateDoc(doc(db(), COL.projects, id), data as Record<string, unknown>);
+  const s = await getDoc(doc(db(), COL.projects, id));
+  return s.exists() ? ({ ...(s.data() as Project), id: s.id }) : null;
 }
 export async function deleteProject(id: string): Promise<void> {
-  await delay();
-  const idx = mockProjects.findIndex((p) => p.id === id);
-  if (idx !== -1) mockProjects.splice(idx, 1);
+  await deleteDoc(doc(db(), COL.projects, id));
 }
 
 // ---------- Gallery ----------
 export async function listGallery(): Promise<GalleryItem[]> {
-  await delay();
-  return [...mockGallery];
+  return listAll<GalleryItem>(COL.gallery);
 }
 export async function createGalleryItem(data: Partial<GalleryItem>): Promise<GalleryItem> {
-  await delay();
+  const id = uid();
   const item: GalleryItem = {
-    id: uid(),
+    id,
     title: data.title || "Untitled",
     image: data.image || "/ref/team-CMydRHty.jpg",
+    videoUrl: data.videoUrl,
     category: data.category || "General",
   };
-  mockGallery.unshift(item);
+  await setDoc(doc(db(), COL.gallery, id), item);
   return item;
 }
 export async function updateGalleryItem(id: string, data: Partial<GalleryItem>): Promise<GalleryItem | null> {
-  await delay();
-  const idx = mockGallery.findIndex((g) => g.id === id);
-  if (idx === -1) return null;
-  mockGallery[idx] = { ...mockGallery[idx], ...data };
-  return mockGallery[idx];
+  await updateDoc(doc(db(), COL.gallery, id), data as Record<string, unknown>);
+  const s = await getDoc(doc(db(), COL.gallery, id));
+  return s.exists() ? ({ ...(s.data() as GalleryItem), id: s.id }) : null;
 }
 export async function deleteGalleryItem(id: string): Promise<void> {
-  await delay();
-  const idx = mockGallery.findIndex((g) => g.id === id);
-  if (idx !== -1) mockGallery.splice(idx, 1);
+  await deleteDoc(doc(db(), COL.gallery, id));
 }
 
 // ---------- Inquiries ----------
 export async function listInquiries(): Promise<Inquiry[]> {
-  await delay();
-  return [...mockInquiries];
+  const items = await listAll<Inquiry>(COL.inquiries);
+  return items.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
 }
 export async function submitInquiry(
   data: Omit<Inquiry, "id" | "status" | "createdAt">,
 ): Promise<Inquiry> {
-  await delay();
+  const id = uid();
   const item: Inquiry = {
-    id: uid(),
+    id,
     ...data,
     status: "new",
     createdAt: new Date().toISOString(),
   };
-  mockInquiries.unshift(item);
+  await setDoc(doc(db(), COL.inquiries, id), item);
   return item;
 }
 export async function updateInquiryStatus(id: string, status: Inquiry["status"]): Promise<void> {
-  await delay();
-  const idx = mockInquiries.findIndex((i) => i.id === id);
-  if (idx !== -1) mockInquiries[idx] = { ...mockInquiries[idx], status };
+  await updateDoc(doc(db(), COL.inquiries, id), { status });
 }
 export async function deleteInquiry(id: string): Promise<void> {
-  await delay();
-  const idx = mockInquiries.findIndex((i) => i.id === id);
-  if (idx !== -1) mockInquiries.splice(idx, 1);
+  await deleteDoc(doc(db(), COL.inquiries, id));
 }
 
 // ---------- Site settings ----------
+const SETTINGS_DOC = "site";
 export async function getSiteSettings(): Promise<SiteSettings> {
-  await delay();
+  const s = await getDoc(doc(db(), COL.settings, SETTINGS_DOC));
+  if (s.exists()) return s.data() as SiteSettings;
+  // Fallback to bundled defaults so public pages never render blank.
   return mockSettings;
 }
 export async function updateSiteSettings(data: Partial<SiteSettings>): Promise<SiteSettings> {
-  await delay();
-  Object.assign(mockSettings, data);
-  return mockSettings;
+  const current = await getSiteSettings();
+  const next = { ...current, ...data } as SiteSettings;
+  await setDoc(doc(db(), COL.settings, SETTINGS_DOC), next);
+  return next;
 }
 
 // ---------- Brands ----------
@@ -262,37 +283,84 @@ const isMainName = (n: string) =>
   (MAIN_BRAND_NAMES as readonly string[]).some((m) => m.toLowerCase() === n.trim().toLowerCase());
 
 export async function listBrands(): Promise<Brand[]> {
-  await delay();
-  return [...mockBrands].sort((a, b) => a.order - b.order);
+  const items = await listAll<Brand>(COL.brands);
+  return items.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 }
 export async function createBrand(data: Partial<Brand>): Promise<Brand> {
-  await delay();
+  const id = uid();
   const name = (data.name || "Untitled").trim();
   const tier: Brand["tier"] = isMainName(name) ? (data.tier ?? "main") : "additional";
+  const existing = await listBrands();
   const item: Brand = {
-    id: uid(),
+    id,
     name,
     logo: data.logo,
     note: data.note || "",
     tier,
     showOnHome: data.showOnHome ?? false,
-    order: data.order ?? mockBrands.length + 1,
+    order: data.order ?? existing.length + 1,
   };
-  mockBrands.push(item);
+  await setDoc(doc(db(), COL.brands, id), item);
   return item;
 }
 export async function updateBrand(id: string, data: Partial<Brand>): Promise<Brand | null> {
-  await delay();
-  const idx = mockBrands.findIndex((b) => b.id === id);
-  if (idx === -1) return null;
-  const next = { ...mockBrands[idx], ...data };
+  const s0 = await getDoc(doc(db(), COL.brands, id));
+  if (!s0.exists()) return null;
+  const next = { ...(s0.data() as Brand), ...data };
   if (!isMainName(next.name)) next.tier = "additional";
-  mockBrands[idx] = next;
-  return mockBrands[idx];
+  await setDoc(doc(db(), COL.brands, id), next);
+  return next;
 }
 export async function deleteBrand(id: string): Promise<void> {
-  await delay();
-  const idx = mockBrands.findIndex((b) => b.id === id);
-  if (idx !== -1) mockBrands.splice(idx, 1);
+  await deleteDoc(doc(db(), COL.brands, id));
 }
 
+// ---------- One-time seeding (admin only) ----------
+/**
+ * Populate empty Firestore collections from the bundled mock data. Safe to
+ * call multiple times: only writes to collections that are currently empty.
+ * Requires an authenticated admin user (writes are blocked by rules otherwise).
+ */
+export async function seedFirestoreFromMock(): Promise<{
+  seeded: string[];
+  skipped: string[];
+}> {
+  const seeded: string[] = [];
+  const skipped: string[] = [];
+
+  async function seedCollection<T extends { id: string }>(
+    name: string,
+    items: readonly T[],
+  ) {
+    const existing = await getDocs(collection(db(), name));
+    if (!existing.empty) {
+      skipped.push(name);
+      return;
+    }
+    const batch = writeBatch(db());
+    for (const it of items) {
+      batch.set(doc(db(), name, it.id), it as unknown as Record<string, unknown>);
+    }
+    await batch.commit();
+    seeded.push(name);
+  }
+
+  await seedCollection(COL.categories, mockCategories);
+  await seedCollection(COL.products, mockProducts);
+  await seedCollection(COL.services, mockServices);
+  await seedCollection(COL.projects, mockProjects);
+  await seedCollection(COL.gallery, mockGallery);
+  await seedCollection(COL.inquiries, mockInquiries);
+  await seedCollection(COL.brands, mockBrands);
+
+  // Settings is a single doc — write only if absent.
+  const s = await getDoc(doc(db(), COL.settings, SETTINGS_DOC));
+  if (!s.exists()) {
+    await setDoc(doc(db(), COL.settings, SETTINGS_DOC), mockSettings);
+    seeded.push("settings");
+  } else {
+    skipped.push("settings");
+  }
+
+  return { seeded, skipped };
+}
