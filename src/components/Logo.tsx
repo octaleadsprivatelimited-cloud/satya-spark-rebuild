@@ -1,7 +1,13 @@
-import logoUrl from "@/assets/satya-logo-v1.png";
+const logoUrl = "/logo.png";
 
 export function Logo({ className = "h-12" }: { className?: string }) {
   return (
-    <img src={logoUrl} alt="Satya Power Technologies" className={`object-contain ${className}`} />
+    <img
+      src={logoUrl}
+      alt="Satya Power Technologys logo"
+      width={598}
+      height={417}
+      className={`object-contain ${className}`}
+    />
   );
 }

@@ -10,7 +10,7 @@ interface SEOProps {
 export function SEO({ title, description, keywords }: SEOProps) {
   const { pathname } = useLocation();
   const domain = "https://satyapowertechnologys.in";
-  const canonicalUrl = `${domain}${pathname === "/" ? "" : pathname}`;
+  const canonicalUrl = `${domain}${pathname === "/" ? "/" : pathname.replace(/\/$/, "")}`;
 
   useEffect(() => {
     // 1. Update document title
@@ -37,9 +37,18 @@ export function SEO({ title, description, keywords }: SEOProps) {
     updateMetaTag('meta[name="description"]', "name", "description", description);
 
     // 3. Update keywords
-    if (keywords) {
-      updateMetaTag('meta[name="keywords"]', "name", "keywords", keywords);
+    {
+      updateMetaTag('meta[name="keywords"]', "name", "keywords", keywords ?? "");
     }
+
+    updateMetaTag(
+      'meta[name="robots"]',
+      "name",
+      "robots",
+      pathname.startsWith("/admin")
+        ? "noindex, nofollow"
+        : "index, follow, max-image-preview:large",
+    );
 
     // 4. Update canonical link
     let canonical = document.querySelector('link[rel="canonical"]');
@@ -58,7 +67,7 @@ export function SEO({ title, description, keywords }: SEOProps) {
     // 6. Update Twitter tags
     updateMetaTag('meta[name="twitter:title"]', "name", "twitter:title", fullTitle);
     updateMetaTag('meta[name="twitter:description"]', "name", "twitter:description", description);
-  }, [title, description, keywords, canonicalUrl]);
+  }, [title, description, keywords, canonicalUrl, pathname]);
 
   return null;
 }
