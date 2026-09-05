@@ -7,7 +7,7 @@ export function Logo({ className = "h-12" }: { className?: string }) {
       alt="Satya Power Technologys logo"
       width={598}
       height={417}
-      className={`object-contain ${className}`}
+      className={`w-auto object-contain ${className}`}
     />
   );
 }
