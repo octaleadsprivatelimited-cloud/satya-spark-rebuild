@@ -1,28 +1,17 @@
-/**
- * Firebase client initialization for Satya Power Technologys.
- *
- * NOTE on the API key:
- *   Firebase Web `apiKey` is a PUBLIC identifier (not a secret) — it is safe
- *   to ship in the client bundle. Access control is enforced by Firebase
- *   Security Rules and (optionally) API key restrictions in Google Cloud
- *   Console, not by keeping this string hidden.
- *
- *   We still read it from `import.meta.env.VITE_FIREBASE_API_KEY` so it can
- *   be swapped per environment. Add it to your `.env` file:
- *
- *     VITE_FIREBASE_API_KEY=AIza...your-key...
- *
- *   The backend `GOOGLE_API_KEY` secret you saved is for server-side use
- *   (e.g. Google APIs called from server functions) — it is not read here.
- */
-
-import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
-import { getAuth, type Auth } from "firebase/auth";
+import { initializeApp, type FirebaseApp } from "firebase/app";
 import { getFirestore, type Firestore } from "firebase/firestore";
+import {
+  getAuth,
+  initializeAuth,
+  browserLocalPersistence,
+  inMemoryPersistence,
+  type Auth,
+} from "firebase/auth";
 import { getStorage, type FirebaseStorage } from "firebase/storage";
+import { getAnalytics, isSupported, type Analytics } from "firebase/analytics";
 
-export const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY ?? "",
+const firebaseConfig = {
+  apiKey: "AIzaSyAXdC1bcD66N9PkpJHG3YOQm0udfUg5SiY",
   authDomain: "satyapowertechnologys-293df.firebaseapp.com",
   projectId: "satyapowertechnologys-293df",
   storageBucket: "satyapowertechnologys-293df.firebasestorage.app",
@@ -31,68 +20,74 @@ export const firebaseConfig = {
   measurementId: "G-QTKJGLH2EL",
 };
 
-let _app: FirebaseApp | null = null;
-let _auth: Auth | null = null;
+let app: FirebaseApp | null = null;
 let _db: Firestore | null = null;
+let _auth: Auth | null = null;
 let _storage: FirebaseStorage | null = null;
+let _analytics: Analytics | null = null;
 
-/**
- * Lazily initialize the Firebase app. Safe to call from SSR — the SDK is
- * only instantiated once and analytics is loaded browser-side only.
- */
-export function getFirebaseApp(): FirebaseApp {
-  if (_app) return _app;
-  if (!firebaseConfig.apiKey) {
-    throw new Error(
-      "Missing VITE_FIREBASE_API_KEY. Add it to your .env to enable Firebase.",
-    );
+function isStorageAvailable(): boolean {
+  try {
+    if (typeof window === "undefined" || !window.document) return false;
+    // Check cookie write permission
+    document.cookie = "spt_test=1; SameSite=Lax";
+    const cookiesOk = document.cookie.indexOf("spt_test=") !== -1;
+    document.cookie = "spt_test=1; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
+
+    // Check localStorage permission
+    localStorage.setItem("spt_test", "1");
+    localStorage.removeItem("spt_test");
+
+    return cookiesOk;
+  } catch {
+    return false;
   }
-  _app = getApps()[0] ?? initializeApp(firebaseConfig);
-  return _app;
 }
 
-export function getFirebaseAuth(): Auth {
-  if (!_auth) _auth = getAuth(getFirebaseApp());
-  return _auth;
-}
-
-export function getDb(): Firestore {
-  if (!_db) _db = getFirestore(getFirebaseApp());
-  return _db;
-}
-
-export function getFirebaseStorage(): FirebaseStorage {
-  if (!_storage) _storage = getStorage(getFirebaseApp());
-  return _storage;
-}
-
-/**
- * Browser-only analytics loader. Import and call from a `useEffect` in a
- * client component — never at module scope, since `getAnalytics` touches
- * `window` and will crash during SSR.
- *
- *   useEffect(() => { void initAnalytics(); }, []);
- */
-export async function initAnalytics() {
+export function getFirebase() {
   if (typeof window === "undefined") return null;
-  const { getAnalytics, isSupported } = await import("firebase/analytics");
-  if (!(await isSupported())) return null;
-  return getAnalytics(getFirebaseApp());
-}
+  if (!app) {
+    try {
+      app = initializeApp(firebaseConfig);
+      _db = getFirestore(app);
 
-/**
- * Suggested Firestore collections (mirror src/lib/types.ts):
- *   - products, categories, services, projects, gallery, blog,
- *     inquiries, settings (single doc: `site`), users (uid-keyed)
- */
-export const collections = {
-  products: "products",
-  categories: "categories",
-  services: "services",
-  projects: "projects",
-  gallery: "gallery",
-  blog: "blog",
-  inquiries: "inquiries",
-  settings: "settings",
-  users: "users",
-} as const;
+      // Initialize Auth based on storage availability
+      if (isStorageAvailable()) {
+        try {
+          _auth = getAuth(app);
+        } catch (e) {
+          console.warn("Failed standard getAuth, fallback to initializeAuth:", e);
+          _auth = initializeAuth(app, { persistence: browserLocalPersistence });
+        }
+      } else {
+        console.warn(
+          "Storage/cookies blocked (sandboxed). Initializing Auth with inMemoryPersistence.",
+        );
+        _auth = initializeAuth(app, { persistence: inMemoryPersistence });
+      }
+
+      _storage = getStorage(app);
+
+      // Initialize Analytics if supported
+      if (import.meta.env.PROD)
+        isSupported()
+          .then((supported) => {
+            if (supported && app) {
+              _analytics = getAnalytics(app);
+            }
+          })
+          .catch((e) => {
+            console.warn("Analytics is not supported in this environment:", e);
+          });
+    } catch (e) {
+      console.warn("Firebase init failed:", e);
+      // Clean up partial initializations to avoid half-broken state
+      app = null;
+      _db = null;
+      _auth = null;
+      _storage = null;
+      _analytics = null;
+    }
+  }
+  return app ? { app, db: _db!, auth: _auth!, storage: _storage!, analytics: _analytics } : null;
+}

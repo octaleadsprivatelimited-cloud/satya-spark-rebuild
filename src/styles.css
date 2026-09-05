@@ -4,14 +4,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Satya Power Technologys — Deep Blue + Amber design system */
-
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -31,162 +28,182 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-brand: var(--brand);
-  --color-brand-foreground: var(--brand-foreground);
-  --color-brand-dark: var(--brand-dark);
-  --color-amber: var(--amber);
-  --color-amber-foreground: var(--amber-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-brand-red: var(--brand-red);
+  --color-brand-red-dark: var(--brand-red-dark);
+  --color-brand-black: var(--brand-black);
+  --color-brand-yellow: var(--brand-yellow);
+  --color-brand-orange: var(--brand-orange);
+
+  --font-sans: "Roboto", Arial, "Helvetica Neue", Helvetica, sans-serif;
+  --font-display: "Roboto", Arial, "Helvetica Neue", Helvetica, sans-serif;
 }
 
 :root {
-  --radius: 0.625rem;
-
+  --radius: 0.125rem;
   --background: oklch(1 0 0);
-  --foreground: oklch(0.18 0.03 260);
-
+  --foreground: hsl(0 0% 10%);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.03 260);
-
+  --card-foreground: hsl(0 0% 10%);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.03 260);
+  --popover-foreground: hsl(0 0% 10%);
+  --primary: hsl(207 94% 41%);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: hsl(210 11% 96%);
+  --secondary-foreground: hsl(0 0% 10%);
+  --muted: hsl(210 11% 96%);
+  --muted-foreground: hsl(0 0% 35%);
+  --accent: hsl(205 73% 94%);
+  --accent-foreground: hsl(207 100% 24%);
+  --destructive: hsl(0 72% 48%);
+  --destructive-foreground: oklch(1 0 0);
+  --border: hsl(0 0% 88%);
+  --input: hsl(0 0% 82%);
+  --ring: hsl(207 94% 41%);
 
-  /* Brand: deep navy blue (matches satyapowertechnologys.in header band) */
-  --brand: oklch(0.36 0.14 258);
-  --brand-dark: oklch(0.26 0.12 258);
-  --brand-foreground: oklch(0.99 0 0);
+  /* Dell UI palette */
+  --brand-red: hsl(207 94% 41%);
+  --brand-red-dark: hsl(207 100% 24%);
+  --brand-black: hsl(0 0% 10%);
+  --brand-yellow: hsl(205 73% 94%);
+  --brand-orange: hsl(204 100% 36%);
 
-  /* Amber accent for CTAs */
-  --amber: oklch(0.78 0.16 75);
-  --amber-foreground: oklch(0.2 0.05 60);
-
-  --primary: oklch(0.36 0.14 258);
-  --primary-foreground: oklch(0.99 0 0);
-
-  --secondary: oklch(0.96 0.01 250);
-  --secondary-foreground: oklch(0.22 0.05 260);
-
-  --muted: oklch(0.965 0.008 250);
-  --muted-foreground: oklch(0.5 0.03 258);
-
-  --accent: oklch(0.94 0.03 250);
-  --accent-foreground: oklch(0.22 0.05 260);
-
-  --destructive: oklch(0.6 0.24 27);
-  --destructive-foreground: oklch(0.99 0 0);
-
-  --border: oklch(0.92 0.01 250);
-  --input: oklch(0.92 0.01 250);
-  --ring: oklch(0.5 0.14 258);
-
-  --gradient-brand: linear-gradient(135deg, oklch(0.32 0.14 258), oklch(0.42 0.15 250));
-  --gradient-hero-overlay: linear-gradient(
-    90deg,
-    oklch(0.12 0.04 260 / 0.85) 0%,
-    oklch(0.12 0.04 260 / 0.55) 55%,
-    oklch(0.12 0.04 260 / 0.25) 100%
-  );
-  --shadow-elegant: 0 20px 40px -20px oklch(0.36 0.14 258 / 0.35);
-  --shadow-soft: 0 2px 8px -2px oklch(0.2 0.05 260 / 0.08);
-
-  --sidebar: oklch(0.22 0.05 260);
-  --sidebar-foreground: oklch(0.94 0.01 250);
-  --sidebar-primary: oklch(0.78 0.16 75);
-  --sidebar-primary-foreground: oklch(0.2 0.05 60);
-  --sidebar-accent: oklch(0.3 0.06 260);
-  --sidebar-accent-foreground: oklch(0.99 0 0);
-  --sidebar-border: oklch(0.32 0.06 260);
-  --sidebar-ring: oklch(0.5 0.14 258);
+  --shadow-elegant: 0 1px 2px hsl(0 0% 0% / 0.04), 0 12px 32px -16px hsl(0 0% 0% / 0.12);
+  --shadow-premium: 0 1px 2px hsl(0 0% 0% / 0.04), 0 30px 60px -30px hsl(0 0% 0% / 0.22);
 }
 
 .dark {
-  --background: oklch(0.14 0.03 260);
-  --foreground: oklch(0.97 0 0);
-  --card: oklch(0.2 0.04 260);
-  --card-foreground: oklch(0.97 0 0);
-  --popover: oklch(0.2 0.04 260);
-  --popover-foreground: oklch(0.97 0 0);
-  --primary: oklch(0.78 0.16 75);
-  --primary-foreground: oklch(0.2 0.05 60);
-  --secondary: oklch(0.26 0.05 260);
-  --secondary-foreground: oklch(0.97 0 0);
-  --muted: oklch(0.26 0.05 260);
-  --muted-foreground: oklch(0.72 0.02 258);
-  --accent: oklch(0.28 0.06 260);
-  --accent-foreground: oklch(0.97 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.6 0.14 258);
+  --background: oklch(0.15 0.01 0);
+  --foreground: oklch(0.98 0 0);
 }
 
 @layer base {
-  * {
-    border-color: var(--color-border);
-  }
-  html {
-    scroll-behavior: smooth;
-  }
+  * { border-color: var(--color-border); }
+  html, body { max-width: 100%; }
+  body { overflow-x: clip; }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: var(--font-display);
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "ss01", "cv11";
   }
+  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: 0; font-weight: 400; }
+  h1 { letter-spacing: 0; font-weight: 300; }
 }
 
-@utility container-page {
-  width: 100%;
-  margin-inline: auto;
-  padding-inline: 1rem;
-  max-width: 80rem;
-  @media (min-width: 640px) {
-    padding-inline: 1.5rem;
-  }
-  @media (min-width: 1024px) {
-    padding-inline: 2rem;
-  }
-}
-
-@utility hero-overlay {
-  background: var(--gradient-hero-overlay);
-}
-
-@utility text-balance {
-  text-wrap: balance;
-}
-
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@utility container-px {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  @media (min-width: 768px) { padding-left: 2rem; padding-right: 2rem; }
 }
 
 @keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-@utility animate-fade-up {
-  animation: fade-up 0.7s ease-out both;
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
 
 @utility animate-marquee {
-  animation: marquee 30s linear infinite;
+  animation: marquee 18s linear infinite;
+  &:hover { animation-play-state: paused; }
+}
+
+@utility shadow-elegant {
+  box-shadow: var(--shadow-elegant);
+}
+@utility shadow-premium {
+  box-shadow: var(--shadow-premium);
+}
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Dell-style button primitives */
+@utility btn-premium {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #fff;
+  background: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius: 2px;
+  box-shadow: none;
+  transition: background .2s ease, border-color .2s ease;
+  &:hover { background: var(--brand-red-dark); border-color: var(--brand-red-dark); }
+  &:active { transform: translateY(0); }
+}
+
+@utility btn-ghost-premium {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--brand-black);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  transition: border-color .25s ease, color .25s ease, background .25s ease, transform .25s ease, box-shadow .25s ease;
+  &:hover { border-color: var(--primary); color: var(--primary); background: var(--accent); }
+}
+
+@utility btn-dark-premium {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--brand-black);
+  border-radius: 2px;
+  transition: transform .25s ease, box-shadow .25s ease, filter .25s ease;
+  &:hover { transform: translateY(-1px); filter: brightness(1.1); box-shadow: 0 12px 24px -12px hsl(220 30% 12% / 0.35); }
+}
+
+/* Premium card primitive */
+@utility card-premium {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 0;
+  box-shadow: var(--shadow-elegant);
+  transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
+  &:hover { transform: translateY(-3px); box-shadow: var(--shadow-premium); border-color: color-mix(in oklab, var(--primary) 30%, var(--border)); }
+}
+
+/* Hide Google Translate toolbar, tooltips, and default UI */
+.goog-te-banner-frame.skiptranslate,
+.goog-te-banner-frame,
+.goog-te-banner {
+  display: none !important;
+}
+body {
+  top: 0px !important;
+}
+.goog-tooltip,
+#goog-gt-tt,
+.goog-gt-tt {
+  display: none !important;
+}
+.goog-te-balloon-frame {
+  display: none !important;
+}
+#google_translate_element {
+  display: none !important;
 }

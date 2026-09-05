@@ -1,0 +1,94 @@
+rules_version = '2';
+
+// Satya Power Technologies — Firestore security rules
+// All data (including image data URLs / base64) is stored in Firestore.
+// Admin panel uses Firebase Auth (email/password). Any signed-in user is
+// treated as an admin since admin accounts are provisioned manually in the
+// Firebase console. Public visitors get read access to content collections
+// and may submit inquiries.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Firestore enforces its document byte limit. Resource has no size() method.
+
+    // ---------- Public content (managed in the admin panel) ----------
+    match /categories/{id} {
+      allow read: if true;
+      allow create, update: if isSignedIn();
+      allow delete: if isSignedIn();
+    }
+
+    match /products/{id} {
+      allow read: if true;
+      allow create, update: if isSignedIn();
+      allow delete: if isSignedIn();
+    }
+
+    match /brands/{id} {
+      allow read: if true;
+      allow create, update: if isSignedIn();
+      allow delete: if isSignedIn();
+    }
+
+    match /gallery/{id} {
+      allow read: if true;
+      allow create, update: if isSignedIn();
+      allow delete: if isSignedIn();
+    }
+
+    match /services/{id} {
+      allow read: if true;
+      allow create, update: if isSignedIn();
+      allow delete: if isSignedIn();
+    }
+
+    // ---------- Site settings ----------
+    match /settings/{id} {
+      allow read: if true;
+      allow create, update: if isSignedIn();
+      allow delete: if isSignedIn();
+    }
+
+    // ---------- Inquiries (contact form) ----------
+    // Anyone can submit. Only admins can read / update status / delete.
+    match /inquiries/{id} {
+      allow read: if isSignedIn();
+      allow create: if
+        request.resource.data.keys().hasAll(['name', 'createdAt']) &&
+        request.resource.data.name is string &&
+        request.resource.data.name.size() > 0 &&
+        request.resource.data.name.size() < 200 &&
+        request.resource.data.phone is string &&
+        request.resource.data.phone.size() <= 30 &&
+        request.resource.data.message is string &&
+        request.resource.data.message.size() <= 2000 &&
+        request.resource.data.status == 'new' &&
+        request.resource.data.createdAt == request.time;
+      allow update, delete: if isSignedIn();
+    }
+
+    // ---------- Payments ----------
+    // Browser callbacks are unverified. Only trusted admins/server verification can confirm payment.
+    match /payments/{id} {
+      allow read, update, delete: if isSignedIn();
+      allow create: if
+        request.resource.data.keys().hasOnly(['name', 'email', 'phone', 'amount', 'description', 'razorpayPaymentId', 'status', 'createdAt']) &&
+        request.resource.data.status == 'pending_verification' &&
+        request.resource.data.amount is number &&
+        request.resource.data.amount > 0 &&
+        request.resource.data.amount <= 10000000 &&
+        request.resource.data.razorpayPaymentId is string &&
+        request.resource.data.razorpayPaymentId.size() <= 100 &&
+        request.resource.data.createdAt == request.time;
+    }
+
+    // ---------- Default deny ----------
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
